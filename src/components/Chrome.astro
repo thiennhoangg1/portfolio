@@ -1,0 +1,59 @@
+---
+// Persistent overlay UI that survives page navigation.
+import { nav, site, whispers } from '../data/site';
+
+interface Props {
+  projects: { slug: string; title: string; tagline: string }[];
+}
+const { projects } = Astro.props;
+const termData = JSON.stringify({
+  email: site.email,
+  linkedin: site.linkedin,
+  github: site.github,
+  pages: nav,
+  projects,
+  whispers,
+});
+---
+
+<div id="chrome" transition:persist="chrome">
+  <div class="grain" aria-hidden="true"></div>
+  <div id="progress" aria-hidden="true"></div>
+
+  <div id="cursor-ring" aria-hidden="true"></div>
+  <div id="cursor-dot" aria-hidden="true"></div>
+  <div id="cursor-label" aria-hidden="true"></div>
+
+  <div id="flashlight" aria-hidden="true"><span>press esc to turn the lights back on</span></div>
+  <div id="whisper-pop" class="whisper-pop" aria-hidden="true"></div>
+  <div id="toasts" aria-live="polite"></div>
+
+  <div id="sleep" aria-hidden="true">
+    <div class="zzz"><span>z</span><span>z</span><span>z</span></div>
+    <p class="mono">the site fell asleep. move to wake it.</p>
+  </div>
+
+  <div id="mini-player" aria-label="Now playing">
+    <button type="button" aria-label="Play" data-cursor="">
+      <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"></path></svg>
+      <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"></path></svg>
+    </button>
+    <canvas aria-hidden="true"></canvas>
+    <span class="mini-title mono"></span>
+  </div>
+
+  <div id="terminal" hidden role="dialog" aria-modal="true" aria-label="Terminal" data-site={termData}>
+    <div class="term-window">
+      <div class="term-bar">
+        <span class="dots"><button type="button" data-term-close aria-label="Close terminal"></button><i></i><i></i></span>
+        <span class="mono">thien@portfolio: ~</span>
+        <span class="mono dim">esc</span>
+      </div>
+      <div class="term-out mono"></div>
+      <label class="term-in mono">
+        <span class="accent">❯</span>
+        <input type="text" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Command" placeholder="type help" />
+      </label>
+    </div>
+  </div>
+</div>

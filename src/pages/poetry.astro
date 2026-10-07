@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const poems = (await getCollection('poems')).sort((a, b) => a.data.order - b.data.order);
+// Poems are plain text: blank lines separate stanzas, line breaks are kept.
+const stanzas = (body = '') =>
+  body.trim().split(/\n\s*\n/).map((s) => s.split('\n').map((l) => l.trim()).filter(Boolean));
+---
+
+<Base title="Poetry" description="Poems by Thien Hoang.">
+  <section class="wrap">
+    <h1 class="page-title display" data-split="load">Poetry</h1>
+    <p class="lede" data-reveal>Short poems about kitchens, code, family, and the quiet after a long shift.</p>
+    <nav class="toc mono" aria-label="Poems" data-reveal>
+      {poems.map((p, i) => <a href={`#${p.id}`} class="link-line">{String(i + 1).padStart(2, '0')} {p.data.title}</a>)}
+    </nav>
+  </section>
+
+  <section class="wrap poems">
+    {poems.map((p, i) => (
+      <article class="poem" id={p.id} data-poem>
+        <header>
+          <span class="mono muted">{String(i + 1).padStart(2, '0')} · {p.data.date}</span>
+          {p.data.sample && <span class="sample-badge">sample</span>}
+          <h2 class="display" data-split>{p.data.title}</h2>
+        </header>
+        <div class="poem-body">
+          {stanzas(p.body).map((st) => (
+            <p class="stanza">{st.map((line) => <span class="poem-line">{line}</span>)}</p>
+          ))}
+        </div>
+        <button type="button" class="speak mono link-line" data-speak data-cursor="listen">read aloud</button>
+      </article>
+    ))}
+  </section>
+</Base>
+
+<style>
+  .toc { display: flex; flex-wrap: wrap; gap: 0.8rem 2rem; margin-top: 2.5rem; font-size: 0.85rem; }
+  .poems { display: grid; gap: clamp(6rem, 12vw, 10rem); padding-block: 6rem 2rem; }
+  .poem { display: grid; grid-template-columns: 1fr 1.4fr; gap: 3rem; scroll-margin-top: 8rem; }
+  .poem:nth-child(even) { direction: rtl; }
+  .poem:nth-child(even) > * { direction: ltr; }
+  .poem header { display: flex; flex-direction: column; gap: 0.8rem; align-items: flex-start; position: sticky; top: 8rem; align-self: start; }
+  .poem h2 { font-size: clamp(2.6rem, 6vw, 5rem); font-style: italic; }
+  .poem-body { font-family: var(--font-display); font-size: clamp(1.25rem, 1.8vw, 1.6rem); line-height: 1.6; font-variation-settings: 'opsz' 24; }
+  .stanza + .stanza { margin-top: 1.4em; }
+  .poem-line { display: block; }
+  :global(html.js) .poem-line { opacity: 0; filter: blur(6px); transform: translateY(0.4em); transition: opacity 1s var(--ease), filter 1s var(--ease), transform 1s var(--ease); }
+  :global(html.js) .poem-line:global(.in) { opacity: 1; filter: none; transform: none; }
+  .poem-line:hover { color: var(--accent); }
+  .speak { font-size: 0.8rem; color: var(--fg-2); justify-self: start; grid-column: 2; }
+  .poem:nth-child(even) .speak { grid-column: 1; }
+  @media (max-width: 800px) {
+    .poem, .poem:nth-child(even) { grid-template-columns: 1fr; direction: ltr; }
+    .poem header { position: static; }
+    .speak, .poem:nth-child(even) .speak { grid-column: 1; }
+  }
+</style>

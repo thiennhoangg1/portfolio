@@ -1,0 +1,133 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { interests, nowList } from '../data/site';
+import { photos } from '../lib/photos';
+import { genArt } from '../lib/genart';
+
+const seedArt = genArt('thien', 1200, 900).url;
+---
+
+<Base title="Lab" description="Experiments, interests, and everything else.">
+  <section class="wrap">
+    <h1 class="page-title display" data-split="load">The <em>Lab</em></h1>
+    <p class="lede" data-reveal>Side quests, interests, and small experiments. Everything that doesn't fit on a resume.</p>
+  </section>
+
+  <section class="wrap interests">
+    {interests.map((it, i) => (
+      <a href={it.href} class="interest" data-reveal style={`--d:${(i % 3) * 0.08}s`} data-cursor="go">
+        <div class="interest-img">{photos[(i * 2 + 1) % photos.length] && <Image src={photos[(i * 2 + 1) % photos.length].src} alt="" widths={[400]} sizes="400px" />}</div>
+        <span class="mono muted">{String(i + 1).padStart(2, '0')}</span>
+        <h2 class="display">{it.title}</h2>
+        <p class="muted">{it.blurb}</p>
+      </a>
+    ))}
+  </section>
+
+  <section class="wrap machine">
+    <div class="machine-text">
+      <p class="eyebrow" data-reveal>Experiment 01</p>
+      <h2 class="display sec" data-split>Art <em>machine</em></h2>
+      <p class="muted" data-reveal>
+        Every project on this site gets cover art generated from its name. Type anything (your name, a mood, a song) to
+        get your own. The same word always makes the same picture.
+      </p>
+      <label class="machine-input mono" data-reveal>
+        <span class="accent">❯</span>
+        <input type="text" value="thien" maxlength="40" data-art-input aria-label="Word to generate art from" spellcheck="false" />
+      </label>
+      <div class="machine-actions" data-reveal>
+        <button type="button" class="btn" data-art-random data-magnetic>Surprise me</button>
+        <a class="btn" data-art-download download="art.svg" href={seedArt} data-magnetic>Download SVG</a>
+      </div>
+    </div>
+    <div class="machine-canvas" data-tilt="6" data-reveal>
+      <img src={seedArt} alt="Generated artwork" data-art-out />
+      <span class="glare" aria-hidden="true"></span>
+    </div>
+  </section>
+
+  <section class="wrap now">
+    <p class="eyebrow" data-reveal>Now</p>
+    <dl class="now-list">
+      {Object.entries(nowList).map(([k, v], i) => (
+        <div data-reveal style={`--d:${i * 0.08}s`}>
+          <dt class="mono muted">{k}</dt>
+          <dd class="display">{v}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+
+  <section class="wrap hunt" data-reveal>
+    <div class="hunt-card">
+      <p class="eyebrow">Experiment 02</p>
+      <h2 class="display sec">This site has <em>secrets.</em></h2>
+      <p class="muted">You've found <span class="accent mono" data-secret-count>0</span>. Some are in the terminal, some are in the code, some just take patience.</p>
+      <button type="button" class="btn solid" data-term-open data-magnetic>Open terminal (⌘K)</button>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { genArt } from '../lib/genart';
+  const words = ['midnight', 'jazz', 'closing time', 'neural', 'saigon', 'rain', 'abstain', 'gradient', 'velvet', 'orbit'];
+  document.addEventListener('astro:page-load', () => {
+    const input = document.querySelector<HTMLInputElement>('[data-art-input]');
+    const out = document.querySelector<HTMLImageElement>('[data-art-out]');
+    const dl = document.querySelector<HTMLAnchorElement>('[data-art-download]');
+    if (!input || !out || !dl) return;
+    const draw = () => {
+      const art = genArt(input.value || ' ', 1200, 900);
+      out.src = art.url;
+      dl.href = art.url;
+      dl.download = `${(input.value || 'art').replace(/\W+/g, '-')}.svg`;
+    };
+    input.addEventListener('input', draw);
+    document.querySelector('[data-art-random]')?.addEventListener('click', () => {
+      input.value = words[Math.floor(Math.random() * words.length)];
+      draw();
+    });
+  });
+</script>
+
+<style>
+  .interests { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin-block: 3rem 8rem; }
+  .interest { position: relative; display: flex; flex-direction: column; gap: 0.6rem; padding: 2rem; min-height: 300px; background: var(--bg); overflow: hidden; isolation: isolate; justify-content: flex-end; }
+  .interest h2 { font-size: 2.4rem; transition: transform 0.6s var(--ease); }
+  .interest p { font-size: 0.95rem; transition: color 0.4s; }
+  .interest-img { position: absolute; inset: 0; z-index: -1; opacity: 0; transform: scale(1.15); transition: opacity 0.6s var(--ease), transform 1.2s var(--ease); }
+  .interest-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(transparent 20%, rgb(0 0 0 / 0.75)); }
+  .interest-img img { width: 100%; height: 100%; object-fit: cover; }
+  .interest:hover .interest-img { opacity: 1; transform: none; }
+  .interest:hover { color: #fff; }
+  .interest:hover .muted { color: rgb(255 255 255 / 0.8); }
+  .interest:hover h2 { transform: translateY(-0.3rem); font-style: italic; }
+
+  .sec { font-size: clamp(2.6rem, 6vw, 5rem); margin: 0.8rem 0 1.2rem; }
+  .machine { display: grid; grid-template-columns: 1fr 1.1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; padding-bottom: 8rem; }
+  .machine-input { display: flex; align-items: center; gap: 0.7rem; margin: 2rem 0 1.2rem; padding: 1rem 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--card); }
+  .machine-input input { flex: 1; background: none; border: 0; outline: none; font: inherit; color: inherit; font-size: 1.1rem; }
+  .machine-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+  .machine-canvas { position: relative; border-radius: var(--radius); overflow: hidden; aspect-ratio: 4 / 3; box-shadow: var(--shadow); transform-style: preserve-3d; }
+  .machine-canvas img { width: 100%; height: 100%; object-fit: cover; }
+  .glare { position: absolute; inset: 0; opacity: 0; transition: opacity 0.4s; mix-blend-mode: overlay; pointer-events: none; }
+
+  .now { padding-bottom: 8rem; }
+  .now-list { display: grid; gap: 0; margin-top: 2rem; border-top: 1px solid var(--line); }
+  .now-list div { display: grid; grid-template-columns: 160px 1fr; gap: 2rem; align-items: baseline; padding: 1.5rem 0; border-bottom: 1px solid var(--line); }
+  .now-list dt { text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.75rem; }
+  .now-list dd { font-size: clamp(1.4rem, 3vw, 2.4rem); margin: 0; }
+
+  .hunt-card { padding: clamp(2rem, 6vw, 5rem); border-radius: calc(var(--radius) + 8px); background: var(--fg); color: var(--bg); position: relative; overflow: hidden; }
+  .hunt-card .muted { color: color-mix(in oklab, var(--bg) 70%, transparent); max-width: 50ch; margin-bottom: 2rem; }
+  .hunt-card::before { content: '?'; position: absolute; right: -2rem; bottom: -6rem; font-family: var(--font-display); font-style: italic; font-size: 28rem; line-height: 1; color: var(--accent); opacity: 0.2; transition: transform 1.2s var(--ease); }
+  .hunt-card:hover::before { transform: rotate(-12deg) scale(1.05); }
+
+  @media (max-width: 860px) {
+    .interests { grid-template-columns: 1fr; }
+    .machine { grid-template-columns: 1fr; }
+    .now-list div { grid-template-columns: 1fr; gap: 0.3rem; }
+  }
+</style>

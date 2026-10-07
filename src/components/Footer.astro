@@ -1,0 +1,49 @@
+---
+import { site } from '../data/site';
+import Marquee from './Marquee.astro';
+
+const accents = [
+  ['ember', '#ff5b2e'], ['cobalt', '#4a63ff'], ['lime', '#b6f03c'],
+  ['violet', '#a46bff'], ['rose', '#ff6fae'], ['teal', '#14c8b0'],
+];
+---
+
+<footer class="footer">
+  <Marquee items={["let's build something", 'say hello', 'open to opportunities', 'coffee chats welcome']} speed={40} big />
+
+  <div class="wrap footer-grid">
+    <div class="footer-cta">
+      <p class="eyebrow">Get in touch</p>
+      <a href={`mailto:${site.email}`} class="footer-email display" data-magnetic="0.15" data-cursor="say hi">
+        <span data-magnetic-inner>{site.email}</span>
+      </a>
+      <div class="footer-links mono">
+        <a class="link-line" href={site.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a class="link-line" href={site.github} target="_blank" rel="noopener">GitHub ↗</a>
+        <a class="link-line" href="/resume.pdf" target="_blank" rel="noopener">Resume ↗</a>
+      </div>
+    </div>
+
+    <div class="footer-side mono">
+      <div>
+        <p class="muted small">St. Louis</p>
+        <p><span data-clock>--:--</span></p>
+        <p class="muted small" data-status></p>
+      </div>
+      <div>
+        <p class="muted small">Pick a color</p>
+        <div class="swatches" role="group" aria-label="Accent color">
+          {accents.map(([name, hex]) => (
+            <button type="button" class="swatch" data-accent={name} style={`--c:${hex}`} aria-label={`Accent ${name}`} data-cursor={name}></button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap footer-bottom mono">
+    <span>© {new Date().getFullYear()} {site.name}</span>
+    <span class="muted">press <kbd>⌘K</kbd> · try ↑↑↓↓←→←→BA</span>
+    <a href="/secrets" class="vault-link" aria-label="Secrets" data-cursor="?">◆</a>
+  </div>
+</footer>

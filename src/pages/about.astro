@@ -1,0 +1,113 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Marquee from '../components/Marquee.astro';
+import { education, site, skills, whispers } from '../data/site';
+import { photos } from '../lib/photos';
+
+const collage = photos.slice(0, 5);
+---
+
+<Base title="About" description={`About ${site.name}: engineer, researcher, restaurant manager, poet.`}>
+  <section class="wrap">
+    <h1 class="page-title display" data-split="load">Hi, I'm <em>Thien.</em></h1>
+  </section>
+
+  <section class="wrap about-grid">
+    <div class="about-text">
+      <p class="lede" data-reveal>
+        I'm a computer science grad student at WashU who likes building things that leave the lab and survive
+        contact with real people.
+      </p>
+      <div class="prose" data-reveal style="--d:.1s">
+        <p>
+          My research looks at <strong>selective prediction</strong>: teaching ML models to recognize when they should{' '}
+          <span class="whisper" data-line={whispers[4]}>hold back</span> instead of guessing. I've also built healthcare
+          AI at a startup, full-stack products used by thousands of students, and computer vision that turned a
+          three-hour inventory job into minutes.
+        </p>
+        <p>
+          I'm also a restaurant manager. That job taught me more about systems, people, and pressure than most classes,
+          so I built the software the restaurant runs on: a touchscreen POS, a time clock, and tip and payroll tools.
+        </p>
+        <p>
+          Outside of that, I write <span class="whisper" data-line={whispers[5]}>poetry</span>, make music late at night,
+          and spend a lot of time as head TA explaining search algorithms until they click.
+        </p>
+      </div>
+      <div class="about-ctas" data-reveal style="--d:.2s">
+        <a href="/resume.pdf" class="btn solid" target="_blank" rel="noopener" data-magnetic>Resume ↓</a>
+        <a href={`mailto:${site.email}`} class="btn" data-magnetic>Say hello</a>
+      </div>
+    </div>
+
+    <div class="collage" aria-hidden="true">
+      {collage.map((p, i) => (
+        <figure class={`c c${i}`} data-parallax={[0.1, 0.25, 0.15, 0.3, 0.2][i]}>
+          <div data-unmask style={`--d:${i * 0.12}s`}>
+            <Image src={p.src} alt="" widths={[300, 600]} sizes="(max-width: 900px) 45vw, 22vw" />
+          </div>
+        </figure>
+      ))}
+    </div>
+  </section>
+
+  <Marquee items={['curious', 'calm under pressure', 'builder', 'teacher', 'night owl', 'writer']} speed={35} big reverse />
+
+  <section class="wrap facts">
+    <div class="fact-block" data-reveal>
+      <p class="eyebrow">Education</p>
+      <h2 class="display">{education.school}</h2>
+      <ul class="plain">{education.degrees.map((d) => <li>{d}</li>)}</ul>
+    </div>
+    <div class="fact-block" data-reveal style="--d:.1s">
+      <p class="eyebrow">Honors</p>
+      <ul class="pills">{education.honors.map((h) => <li class="tag">{h}</li>)}</ul>
+      <p class="eyebrow" style="margin-top:2rem">Coursework</p>
+      <ul class="pills">{education.coursework.map((c) => <li class="tag">{c}</li>)}</ul>
+    </div>
+    <div class="fact-block" data-reveal style="--d:.2s">
+      <p class="eyebrow">Toolbox</p>
+      <div class="toolbox">
+        {[...skills.languages, ...skills.tools].map((s, i) => (
+          <span class="tool-chip" style={`--r:${(i * 37) % 11 - 5}deg`} data-hover>{s}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 6rem); padding-block: 2rem 6rem; align-items: start; }
+  .about-text .lede { margin-bottom: 2rem; color: var(--fg); }
+  .about-ctas { display: flex; gap: 0.8rem; margin-top: 2.5rem; flex-wrap: wrap; }
+  .collage { position: relative; height: clamp(520px, 60vw, 780px); }
+  .c { position: absolute; margin: 0; }
+  .c > div { overflow: hidden; border-radius: 14px; box-shadow: var(--shadow); }
+  .c img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 3 / 4; transition: transform 1s var(--ease); }
+  .c:hover img { transform: scale(1.08); }
+  .c0 { width: 46%; top: 0; left: 4%; z-index: 2; }
+  .c1 { width: 38%; top: 8%; right: 0; }
+  .c2 { width: 34%; top: 44%; left: 0; z-index: 3; }
+  .c3 { width: 42%; top: 50%; right: 8%; z-index: 1; }
+  .c4 { width: 26%; top: 34%; left: 38%; z-index: 4; }
+  .c4 img { aspect-ratio: 1; }
+
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; padding-block: 6rem 2rem; }
+  .fact-block h2 { font-size: 2.2rem; margin: 0.8rem 0 1rem; line-height: 1.05; }
+  .plain { list-style: none; padding: 0; color: var(--fg-2); }
+  .plain li + li { margin-top: 0.3rem; }
+  .pills { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+  .toolbox { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
+  .tool-chip {
+    font-family: var(--font-mono); font-size: 0.8rem; padding: 0.5em 0.9em; border-radius: 10px;
+    background: var(--card); border: 1px solid var(--line);
+    transition: transform 0.5s var(--ease), background 0.3s, color 0.3s;
+  }
+  .tool-chip:hover { transform: rotate(var(--r)) scale(1.15); background: var(--accent); color: var(--accent-ink); }
+
+  @media (max-width: 900px) {
+    .about-grid, .facts { grid-template-columns: 1fr; }
+    .collage { height: 120vw; }
+  }
+</style>

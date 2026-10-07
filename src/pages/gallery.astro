@@ -1,0 +1,62 @@
+---
+import { getImage, Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import { photos } from '../lib/photos';
+
+const items = await Promise.all(
+  photos.map(async (p) => ({ ...p, full: (await getImage({ src: p.src, width: 1600, format: 'webp' })).src })),
+);
+const hasPlaceholders = photos.some((p) => p.file.startsWith('placeholder-'));
+---
+
+<Base title="Gallery" description="Photos by Thien Hoang.">
+  <section class="wrap">
+    <h1 class="page-title display" data-split="load">Gallery</h1>
+    <p class="lede" data-reveal>Light hitting things at the right time. Click any photo to look closer.</p>
+    {hasPlaceholders && (
+      <p class="mono muted note" data-reveal><span class="sample-badge">sample</span> Placeholder photos for now.</p>
+    )}
+  </section>
+
+  <section class="wrap masonry">
+    {items.map((p, i) => (
+      <a href={p.full} class="ph" data-gallery-item data-full={p.full} data-cursor="zoom" style={`--d:${(i % 3) * 0.1}s`}>
+        <div class="ph-frame" data-unmask style={`--d:${(i % 3) * 0.1}s`}>
+          <Image src={p.src} alt={p.caption || `Photo ${i + 1}`} widths={[400, 800]} sizes="(max-width: 700px) 90vw, 30vw" data-zoom />
+        </div>
+        {p.caption && <span class="cap mono">{p.caption}</span>}
+      </a>
+    ))}
+  </section>
+
+  <div class="lightbox" data-lightbox hidden role="dialog" aria-modal="true" aria-label="Photo viewer">
+    <img alt="" />
+    <button type="button" class="lb-btn lb-prev" data-lb-prev aria-label="Previous photo">←</button>
+    <button type="button" class="lb-btn lb-next" data-lb-next aria-label="Next photo">→</button>
+    <button type="button" class="lb-btn lb-close" data-lb-close aria-label="Close">×</button>
+    <span class="lb-count mono"></span>
+  </div>
+</Base>
+
+<style>
+  .note { display: flex; gap: 0.7rem; align-items: center; font-size: 0.8rem; margin-top: 1.5rem; }
+  .masonry { columns: 3 280px; column-gap: 1.2rem; padding-block: 4rem 2rem; }
+  .ph { display: block; break-inside: avoid; margin-bottom: 1.2rem; position: relative; }
+  .ph-frame { overflow: hidden; border-radius: 12px; background: var(--bg-2); }
+  .ph img { width: 100%; height: auto; transition: filter 0.6s; }
+  .masonry:hover .ph img { filter: grayscale(0.8) brightness(0.8); }
+  .masonry .ph:hover img { filter: none; }
+  .cap { position: absolute; left: 0.8rem; bottom: 0.8rem; font-size: 0.7rem; padding: 0.35em 0.7em; border-radius: 999px; background: rgb(0 0 0 / 0.5); color: #fff; backdrop-filter: blur(6px); opacity: 0; transform: translateY(6px); transition: opacity 0.4s, transform 0.4s var(--ease); }
+  .ph:hover .cap { opacity: 1; transform: none; }
+
+  .lightbox { position: fixed; inset: 0; z-index: 9600; display: grid; place-items: center; background: rgb(8 8 10 / 0.94); opacity: 0; transition: opacity 0.4s; padding: 4rem 1rem; }
+  .lightbox[hidden] { display: none; }
+  .lightbox:global(.open) { opacity: 1; }
+  .lightbox img { max-width: min(1400px, 92vw); max-height: 84vh; width: auto; height: auto; border-radius: 8px; object-fit: contain; }
+  .lb-btn { position: absolute; color: #fff; font-size: 1.6rem; width: 52px; height: 52px; border-radius: 50%; border: 1px solid rgb(255 255 255 / 0.25); display: grid; place-items: center; transition: background 0.3s; }
+  .lb-btn:hover { background: rgb(255 255 255 / 0.12); }
+  .lb-prev { left: 1.5rem; top: 50%; transform: translateY(-50%); }
+  .lb-next { right: 1.5rem; top: 50%; transform: translateY(-50%); }
+  .lb-close { right: 1.5rem; top: 1.5rem; }
+  .lb-count { position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%); color: rgb(255 255 255 / 0.7); font-size: 0.8rem; }
+</style>

@@ -1,0 +1,25 @@
+---
+interface Props {
+  items: string[];
+  speed?: number;
+  big?: boolean;
+  reverse?: boolean;
+}
+const { items, speed = 30, big = false, reverse = false } = Astro.props;
+const row = [...items, ...items];
+---
+
+<div class:list={['marquee', { big, reverse }]} style={`--speed:${speed}s`} aria-label={items.join(', ')}>
+  <div class="marquee-skew" data-skew>
+    {[0, 1].map(() => (
+      <div class="marquee-track" aria-hidden="true">
+        {row.map((t) => (
+          <span class="marquee-item">
+            <span class={big ? 'display' : 'mono'}>{t}</span>
+            <span class="marquee-sep">✦</span>
+          </span>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>

@@ -1,0 +1,118 @@
+---
+import { getCollection } from 'astro:content';
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { genArt } from '../../lib/genart';
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const previews = await Promise.all(
+  projects.map(async (p) => (p.data.cover ? (await getImage({ src: p.data.cover, width: 520, format: 'webp' })).src : genArt(p.id, 800, 600).url)),
+);
+const kinds = [
+  { key: 'all', label: 'All' },
+  { key: 'work', label: 'Work' },
+  { key: 'research', label: 'Research' },
+  { key: 'side', label: 'Side projects' },
+];
+---
+
+<Base title="Projects" description="Projects by Thien Hoang: ML research, healthcare AI, full-stack products, and tools for small businesses.">
+  <section class="wrap">
+    <h1 class="page-title display" data-split="load">Projects</h1>
+    <div class="controls" data-reveal>
+      <div class="filters" role="group" aria-label="Filter projects">
+        {kinds.map((k, i) => (
+          <button type="button" class:list={['filter', { on: i === 0 }]} data-filter={k.key} aria-pressed={i === 0 ? 'true' : 'false'}>
+            {k.label} <sup>{k.key === 'all' ? projects.length : projects.filter((p) => p.data.kind === k.key).length}</sup>
+          </button>
+        ))}
+      </div>
+      <div class="views" role="group" aria-label="Layout">
+        <button type="button" class="view on" data-view="list" aria-pressed="true">List</button>
+        <button type="button" class="view" data-view="grid" aria-pressed="false">Grid</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" data-projects data-layout="list">
+    <ul class="plist" data-hover-list>
+      {projects.map((p, i) => (
+        <li data-kind={p.data.kind} data-reveal style={`--d:${i * 0.04}s`}>
+          <a href={`/projects/${p.id}`} class="prow" data-preview={previews[i]} data-cursor="open">
+            <span class="mono muted">{String(i + 1).padStart(2, '0')}</span>
+            <span class="prow-title display">{p.data.title}</span>
+            <span class="prow-tag muted">{p.data.tagline}</span>
+            <span class="mono muted prow-year">{p.data.year}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="pgrid">
+      {projects.map((p, i) => (
+        <div data-kind={p.data.kind} class="pgrid-item"><ProjectCard project={p} index={i} /></div>
+      ))}
+    </div>
+  </section>
+
+  <div class="hover-preview" data-hover-preview aria-hidden="true"><img alt="" /></div>
+</Base>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const root = document.querySelector<HTMLElement>('[data-projects]');
+    if (!root) return;
+    const filters = document.querySelectorAll<HTMLButtonElement>('[data-filter]');
+    const views = document.querySelectorAll<HTMLButtonElement>('[data-view]');
+    filters.forEach((b) => b.addEventListener('click', () => {
+      filters.forEach((x) => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', String(x === b)); });
+      const k = b.dataset.filter;
+      root.querySelectorAll<HTMLElement>('[data-kind]').forEach((el) => {
+        const show = k === 'all' || el.dataset.kind === k;
+        el.classList.toggle('hide', !show);
+      });
+    }));
+    views.forEach((b) => b.addEventListener('click', () => {
+      views.forEach((x) => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', String(x === b)); });
+      const go = () => { root.dataset.layout = b.dataset.view; };
+      const d = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+      d.startViewTransition ? d.startViewTransition(go) : go();
+    }));
+  });
+</script>
+
+<style>
+  .controls { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding-bottom: 3rem; }
+  .filters, .views { display: flex; gap: 0.3rem; padding: 0.3rem; border: 1px solid var(--line); border-radius: 999px; }
+  .filter, .view { font-family: var(--font-mono); font-size: 0.8rem; padding: 0.5em 1em; border-radius: 999px; transition: background 0.3s, color 0.3s; }
+  .filter sup { font-size: 0.6rem; opacity: 0.6; }
+  .filter.on, .view.on { background: var(--fg); color: var(--bg); }
+  .hide { display: none !important; }
+
+  .plist { list-style: none; padding: 0; border-top: 1px solid var(--line); }
+  .prow { display: grid; grid-template-columns: 3rem 1.2fr 1.5fr 4rem; gap: 1.5rem; align-items: center; padding: 1.8rem 0; border-bottom: 1px solid var(--line); transition: opacity 0.4s, padding 0.5s var(--ease); }
+  .prow-title { font-size: clamp(1.8rem, 3.8vw, 3.4rem); transition: transform 0.6s var(--ease), color 0.3s; }
+  .prow-tag { font-size: 0.95rem; }
+  .prow-year { text-align: right; }
+  .plist:hover .prow { opacity: 0.35; }
+  .plist .prow:hover { opacity: 1; }
+  .prow:hover .prow-title { transform: translateX(1rem); font-style: italic; color: var(--accent); }
+
+  .pgrid { display: none; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 3rem 2rem; }
+  [data-layout='grid'] .plist { display: none; }
+  [data-layout='grid'] .pgrid { display: grid; }
+
+  .hover-preview {
+    position: fixed; top: 0; left: 0; z-index: 50; pointer-events: none;
+    width: clamp(240px, 24vw, 380px); aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden;
+    opacity: 0; transition: opacity 0.35s;
+    box-shadow: var(--shadow);
+  }
+  .hover-preview:global(.on) { opacity: 1; }
+  .hover-preview img { width: 100%; height: 100%; object-fit: cover; }
+  @media (max-width: 760px) {
+    .prow { grid-template-columns: 2rem 1fr; gap: 0.5rem 1rem; }
+    .prow-tag, .prow-year { grid-column: 2; text-align: left; }
+    .hover-preview { display: none; }
+  }
+</style>
