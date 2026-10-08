@@ -1,11 +1,13 @@
 ---
 // Persistent overlay UI that survives page navigation.
-import { nav, site, whispers } from '../data/site';
+import { currently, education, nav, site, skills, whispers } from '../data/site';
 
 interface Props {
   projects: { slug: string; title: string; tagline: string }[];
+  drive: Record<string, unknown>;
 }
-const { projects } = Astro.props;
+const { projects, drive } = Astro.props;
+const driveData = JSON.stringify({ site, education, skills, currently, ...drive });
 const termData = JSON.stringify({
   email: site.email,
   linkedin: site.linkedin,
@@ -41,6 +43,8 @@ const termData = JSON.stringify({
     <canvas aria-hidden="true"></canvas>
     <span class="mini-title mono"></span>
   </div>
+
+  <div id="drive" hidden role="dialog" aria-modal="true" aria-label="Drive mode" data-drive={driveData}></div>
 
   <div id="terminal" hidden role="dialog" aria-modal="true" aria-label="Terminal" data-site={termData}>
     <div class="term-window">

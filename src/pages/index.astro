@@ -6,6 +6,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import Marquee from '../components/Marquee.astro';
 import { currently, site, skills, whispers } from '../data/site';
 import { photos } from '../lib/photos';
+import { landmarks } from '../data/drive';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const featured = projects.filter((p) => p.data.featured);
@@ -13,6 +14,9 @@ const jobs = (await getCollection('experience')).sort((a, b) => a.data.order - b
 
 const trail = await Promise.all(photos.slice(0, 10).map((p) => getImage({ src: p.src, width: 360, format: 'webp' })));
 const trailSrcs = JSON.stringify(trail.map((t) => t.src));
+
+// Pins on the CSS globe in the drive teaser: [longitude, latitude].
+const pins = [[-90, 38], [-74, 40], [-122, 37], [-103, 44], [-122, 47], [31, 30], [0, 51], [2, 48], [12, 42], [78, 27], [151, -34], [10, 43], [139, 35]];
 
 const nameChars = (s: string) => [...s].map((c) => (c === ' ' ? ' ' : c));
 const beyond = [
@@ -84,13 +88,37 @@ const beyond = [
     ))}
   </section>
 
+  <!-- Drive mode teaser -->
+  <section class="wrap drive-cta">
+    <div class="drive-cta-text">
+      <p class="eyebrow" data-reveal>Or take the scenic route</p>
+      <h2 class="display section-title" data-flip3d>Drive through my <em>work</em></h2>
+      <p class="drive-cta-blurb muted" data-reveal>
+        A tiny 3D world with the Gateway Arch, the Golden Gate, the Eiffel Tower, and {landmarks.length - 3} more landmarks.
+        Each one holds a piece of my resume, and the billboards on Resume Highway tell the rest.
+      </p>
+      <div class="drive-cta-actions" data-reveal>
+        <button type="button" class="btn solid" data-drive-toggle data-magnetic>Start driving →</button>
+        <span class="mono muted">or press <kbd>D</kbd> anywhere</span>
+      </div>
+    </div>
+    <button type="button" class="drive-stage" data-drive-toggle data-cursor="drive" aria-label="Start drive mode">
+      <span class="globe" aria-hidden="true">
+        {[0, 30, 60, 90, 120, 150].map((d) => <span class="globe-m" style={`--r:${d}deg`}></span>)}
+        {[-50, -25, 0, 25, 50].map((l) => <span class="globe-p" style={`--l:${l}`}></span>)}
+        {pins.map(([lon, lat]) => <span class="globe-pin" style={`--lon:${lon}deg;--lat:${lat}deg`}></span>)}
+      </span>
+      <canvas class="drive-car" data-hero3d aria-hidden="true"></canvas>
+    </button>
+  </section>
+
   <Marquee items={[...skills.languages, ...skills.tools]} speed={45} />
 
   <!-- Featured projects: horizontal scroll -->
   <section class="featured" data-hscroll>
     <div class="featured-head wrap">
       <p class="eyebrow">Selected work</p>
-      <h2 class="display section-title" data-split>Things I've <em>built</em></h2>
+      <h2 class="display section-title" data-flip3d>Things I've <em>built</em></h2>
     </div>
     <div class="featured-track" data-hscroll-track>
       {featured.map((p, i) => (
@@ -107,14 +135,14 @@ const beyond = [
   <section class="wrap exp">
     <div class="exp-head">
       <p class="eyebrow">Experience</p>
-      <h2 class="display section-title" data-split>Where I've <em>worked</em></h2>
+      <h2 class="display section-title" data-flip3d>Where I've <em>worked</em></h2>
     </div>
     <ul class="exp-list">
       {jobs.map((j, i) => (
         <li data-reveal style={`--d:${i * 0.06}s`}>
           <a href="/experience" class="exp-row" data-cursor="more">
             <span class="mono muted">{String(i + 1).padStart(2, '0')}</span>
-            <span class="exp-role display">{j.data.role}</span>
+            <span class="exp-role display roll"><span class="roll-inner"><span>{j.data.role}</span><span aria-hidden="true">{j.data.role}</span></span></span>
             <span class="exp-org">{j.data.org}</span>
             <span class="mono muted exp-date">{j.data.current ? 'Now' : j.data.end}</span>
           </a>
@@ -127,7 +155,7 @@ const beyond = [
   <!-- Beyond the code -->
   <section class="wrap beyond">
     <p class="eyebrow" data-reveal>Beyond the code</p>
-    <h2 class="display section-title" data-split>The <em>other</em> half</h2>
+    <h2 class="display section-title" data-flip3d>The <em>other</em> half</h2>
     <div class="beyond-grid">
       {beyond.map((b, i) => (
         <a href={b.href} class="beyond-card" data-cursor="open" data-reveal style={`--d:${i * 0.08}s`}>
@@ -194,10 +222,38 @@ const beyond = [
   .stat .muted { font-size: 0.9rem; max-width: 24ch; }
 
   .section-title { font-size: clamp(3rem, 8vw, 7.5rem); margin-top: 0.8rem; }
+
+  .drive-cta { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; padding-block: 4rem 7rem; }
+  .drive-cta-blurb { font-size: 1.1rem; max-width: 42ch; margin-top: 1.5rem; }
+  .drive-cta-actions { display: flex; align-items: center; gap: 1.2rem; flex-wrap: wrap; margin-top: 2rem; }
+  .drive-cta-actions .mono { font-size: 0.78rem; }
+  kbd { font-family: var(--font-mono); font-size: 0.85em; padding: 0.1em 0.5em; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 6px; }
+  .drive-stage { position: relative; aspect-ratio: 1; width: 100%; max-width: 560px; justify-self: center; display: grid; place-items: center; perspective: 1200px; }
+  .drive-car { position: absolute; inset: -6% -10%; width: 120%; height: 112%; opacity: 0; transition: opacity 1.2s var(--ease), transform 0.8s var(--ease); }
+  .drive-car:global(.ready) { opacity: 1; }
+  .drive-stage:hover .drive-car { transform: translateY(-8px) scale(1.03); }
+  .globe { position: absolute; width: 74%; aspect-ratio: 1; transform-style: preserve-3d; animation: globe-spin 28s linear infinite; top: 4%; }
+  .globe-m, .globe-p { position: absolute; inset: 0; border-radius: 50%; border: 1px solid color-mix(in oklab, var(--fg) 22%, transparent); }
+  .globe-m { transform: rotateY(var(--r)); }
+  .globe-p { inset: auto; left: 50%; top: calc(50% - sin(var(--l) * 1deg) * 50%); width: calc(100% * cos(var(--l) * 1deg)); aspect-ratio: 1; transform: translate(-50%, -50%) rotateX(90deg); }
+  .globe-pin { position: absolute; left: 50%; top: 50%; width: 10px; height: 10px; margin: -5px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); transform: rotateY(var(--lon)) rotateX(var(--lat)) translateZ(calc(min(560px, 40vw) * 0.37)); }
+  @keyframes globe-spin { to { transform: rotateX(-14deg) rotateY(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .globe { animation: none; transform: rotateX(-14deg); } }
+  @media (max-width: 860px) {
+    .drive-cta { grid-template-columns: 1fr; }
+    .globe-pin { transform: rotateY(var(--lon)) rotateX(var(--lat)) translateZ(calc(min(560px, 90vw) * 0.37)); }
+  }
+
+  .roll { display: inline-block; perspective: 800px; }
+  .roll-inner { display: inline-grid; transform-style: preserve-3d; transform: translateZ(-0.55em); transition: transform 0.7s var(--ease); }
+  .roll-inner > span { grid-area: 1 / 1; backface-visibility: hidden; transform: translateZ(0.55em); }
+  .roll-inner > span + span { transform: rotateX(-90deg) translateZ(0.55em); font-style: italic; color: var(--accent); }
+  .exp-row:hover .roll-inner { transform: translateZ(-0.55em) rotateX(90deg); }
+  @media (prefers-reduced-motion: reduce) { .roll-inner { transition: none; } .exp-row:hover .roll-inner { transform: translateZ(-0.55em); } }
   .featured { padding-block: clamp(5rem, 10vw, 8rem); overflow: hidden; }
   .featured-head { margin-bottom: 3rem; }
-  .featured-track { display: flex; gap: clamp(1.5rem, 3vw, 3rem); padding-inline: var(--pad); width: max-content; align-items: stretch; }
-  .featured-item { width: clamp(320px, 38vw, 560px); }
+  .featured-track { perspective: 1600px; display: flex; gap: clamp(1.5rem, 3vw, 3rem); padding-inline: var(--pad); width: max-content; align-items: stretch; }
+  .featured-item { width: clamp(320px, 38vw, 560px); transform-style: preserve-3d; will-change: transform; }
   .featured-more { width: clamp(240px, 24vw, 360px); display: flex; flex-direction: column; justify-content: center; gap: 1rem; font-size: clamp(2.2rem, 3.6vw, 3.4rem); border: 1px solid var(--line); border-radius: var(--radius); padding: 2rem; transition: background 0.5s var(--ease), color 0.5s; }
   .featured-more:hover { background: var(--accent); color: var(--accent-ink); }
   .featured-more .arrow { transition: transform 0.6s var(--ease); display: inline-block; }

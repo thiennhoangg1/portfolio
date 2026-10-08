@@ -234,11 +234,73 @@ onPage(() => {
   const mm = gsap.matchMedia();
   mm.add('(min-width: 900px)', () => {
     const dist = () => track.scrollWidth - innerWidth + 80;
+    // Coverflow: cards turn and sink back in 3D the farther they are from center.
+    const items = Array.from(track.children) as HTMLElement[];
+    const flow = () => {
+      const mid = innerWidth / 2;
+      for (const el of items) {
+        const r = el.getBoundingClientRect();
+        const d = clamp((r.left + r.width / 2 - mid) / innerWidth, -1, 1);
+        el.style.transform = `translateZ(${(-Math.abs(d) * 220).toFixed(1)}px) rotateY(${(-d * 32).toFixed(2)}deg)`;
+        el.style.opacity = String(1 - Math.abs(d) * 0.35);
+      }
+    };
     gsap.to(track, {
       x: () => -dist(),
       ease: 'none',
-      scrollTrigger: { trigger: sec, start: 'top top', end: () => `+=${dist()}`, scrub: 0.8, pin: true, invalidateOnRefresh: true, anticipatePin: 1 },
+      onUpdate: flow,
+      scrollTrigger: { trigger: sec, start: 'top top', end: () => `+=${dist()}`, scrub: 0.8, pin: true, invalidateOnRefresh: true, anticipatePin: 1, onRefresh: flow },
     });
+    flow();
+    return () => items.forEach((el) => { el.style.transform = ''; el.style.opacity = ''; });
   });
   return () => mm.revert();
+});
+
+// --- 3D character flip: letters rotate up into place, like a split-flap board ---
+function splitChars(el: HTMLElement) {
+  if (el.dataset.flipDone) return $$('.flip-char', el);
+  el.dataset.flipDone = '1';
+  el.setAttribute('aria-label', el.textContent ?? '');
+  const walk = (node: Node): Node[] => {
+    if (node.nodeType === Node.TEXT_NODE) {
+      return (node.textContent ?? '').split(/(\s+)/).filter(Boolean).map((w) => {
+        if (/^\s+$/.test(w)) return document.createTextNode(w);
+        const word = document.createElement('span');
+        word.className = 'flip-word';
+        word.setAttribute('aria-hidden', 'true');
+        for (const ch of w) {
+          const c = document.createElement('span');
+          c.className = 'flip-char';
+          c.textContent = ch;
+          word.appendChild(c);
+        }
+        return word;
+      });
+    }
+    if (node instanceof HTMLElement) node.replaceChildren(...Array.from(node.childNodes).flatMap(walk));
+    return [node];
+  };
+  el.replaceChildren(...Array.from(el.childNodes).flatMap(walk));
+  return $$('.flip-char', el);
+}
+
+onPage(() => {
+  if (reducedMotion()) return;
+  const tweens: gsap.core.Tween[] = [];
+  for (const el of $$('[data-flip3d]')) {
+    const chars = splitChars(el);
+    tweens.push(gsap.from(chars, {
+      rotateX: -100,
+      yPercent: 40,
+      z: -80,
+      opacity: 0,
+      transformOrigin: '50% 50% -0.4em',
+      duration: 1.1,
+      ease: 'expo.out',
+      stagger: { each: 0.035, from: 'start' },
+      scrollTrigger: { trigger: el, start: 'top 88%' },
+    }));
+  }
+  return () => tweens.forEach((t) => t.kill());
 });

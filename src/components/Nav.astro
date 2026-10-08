@@ -15,8 +15,12 @@ import { nav, site } from '../data/site';
   </nav>
 
   <div class="tools">
+    <button type="button" class="tool drive-pill mono" data-drive-toggle data-cursor="drive" aria-label="Drive mode: explore the portfolio in 3D (D)">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11l1.6-4.2A2 2 0 0 1 8.5 5.5h7a2 2 0 0 1 1.9 1.3L19 11m-14 0h14m-14 0a2 2 0 0 0-2 2v3h2m14-5a2 2 0 0 1 2 2v3h-2M5 16v1.5M19 16v1.5M7.5 13.5h.01M16.5 13.5h.01" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      <span class="drive-pill-label">drive</span>
+    </button>
     <button type="button" class="tool secrets-pill mono" data-term-open data-cursor="⌘K" aria-label="Open terminal and secrets">
-      <span aria-hidden="true">✦</span> <span data-secret-count>0/17</span>
+      <span aria-hidden="true">✦</span> <span data-secret-count>0/19</span>
     </button>
     <button type="button" class="tool" data-sound-toggle aria-label="Toggle sound effects" data-cursor="sound">
       <svg viewBox="0 0 24 24" aria-hidden="true" class="i-sound">
@@ -49,5 +53,6 @@ import { nav, site } from '../data/site';
       </a>
     ))}
   </nav>
-  <p class="mono muted">tip: press ⌘K or / for the terminal</p>
+  <button type="button" class="btn menu-drive" data-drive-toggle>Explore in drive mode →</button>
+  <p class="mono muted">tip: press ⌘K or / for the terminal, or D to drive</p>
 </div>

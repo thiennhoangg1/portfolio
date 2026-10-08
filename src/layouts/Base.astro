@@ -7,6 +7,7 @@ import Footer from '../components/Footer.astro';
 import { site } from '../data/site';
 import '../styles/global.css';
 import '../styles/chrome.css';
+import '../styles/drive.css';
 
 interface Props {
   title?: string;
@@ -16,6 +17,16 @@ interface Props {
 const { title, description = site.description } = Astro.props;
 const fullTitle = title ? `${title} · ${site.name}` : site.title;
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const experience = (await getCollection('experience')).sort((a, b) => a.data.order - b.data.order);
+const music = (await getCollection('music')).sort((a, b) => a.data.order - b.data.order);
+const poems = (await getCollection('poems')).sort((a, b) => a.data.order - b.data.order);
+const bullets = (md = '') => md.split('\n').filter((l) => l.startsWith('- ')).map((l) => l.slice(2).trim());
+const drive = {
+  projects: projects.map((p) => ({ slug: p.id, title: p.data.title, tagline: p.data.tagline, kind: p.data.kind, year: p.data.year, role: p.data.role, stack: p.data.stack })),
+  experience: experience.map((e) => ({ id: e.id, role: e.data.role, org: e.data.org, location: e.data.location, start: e.data.start, end: e.data.end, tags: e.data.tags, bullets: bullets(e.body) })),
+  music: music.map((m) => ({ id: m.id, title: m.data.title, mood: m.data.mood, audio: m.data.audio, seed: m.data.seed, key: m.data.key, bpm: m.data.bpm })),
+  poems: poems.map((p) => ({ id: p.id, title: p.data.title })),
+};
 ---
 
 <!doctype html>
@@ -45,7 +56,7 @@ const projects = (await getCollection('projects')).sort((a, b) => a.data.order -
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
-    <Chrome projects={projects.map((p) => ({ slug: p.id, title: p.data.title, tagline: p.data.tagline }))} />
+    <Chrome projects={projects.map((p) => ({ slug: p.id, title: p.data.title, tagline: p.data.tagline }))} drive={drive} />
     <Nav />
     <main id="main">
       <slot />

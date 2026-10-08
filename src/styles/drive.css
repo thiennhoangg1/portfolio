@@ -1,0 +1,185 @@
+/* Drive mode: overlay, HUD, cards, touch controls, and the nav toggle. */
+
+/* ---------- Toggle ---------- */
+.drive-pill { gap: 0.4rem; }
+.drive-pill svg { width: 19px; height: 19px; transition: transform 0.5s var(--ease); }
+.drive-pill:hover svg { transform: translateX(3px) rotate(-6deg); }
+.drive-pill:hover { border-color: var(--accent); color: var(--accent); }
+.menu-drive { margin-top: 1.5rem; }
+@media (max-width: 960px) { .drive-pill-label { display: none; } }
+@media (min-width: 961px) { .menu-drive { display: none; } }
+
+/* ---------- Overlay ---------- */
+#drive {
+  position: fixed; inset: 0; z-index: 9300;
+  background: var(--bg); color: var(--fg);
+  opacity: 0; transition: opacity 0.45s var(--ease);
+  overflow: hidden; touch-action: none; user-select: none;
+}
+#drive[hidden] { display: none; }
+#drive.open { opacity: 1; }
+html.driving { overflow: hidden; }
+html.driving #cursor-dot, html.driving #cursor-ring, html.driving #cursor-label { display: none; }
+html.driving #mini-player { z-index: 9360; left: calc(var(--pad) + 290px); }
+html.driving #sleep { display: none; }
+@media (pointer: coarse) { html.driving #mini-player:not(.on) { display: none; } html.driving #mini-player { left: 1rem; bottom: auto; top: 4.6rem; } }
+.drive-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+.drive-loading {
+  position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 1rem;
+  font-size: 0.85rem; color: var(--fg-2);
+}
+.drive-loading-car { font-size: 3rem; animation: drive-bob 0.5s ease-in-out infinite alternate; }
+@keyframes drive-bob { to { transform: translateY(-6px) rotate(-3deg); } }
+
+/* ---------- HUD ---------- */
+.drive-hud { position: absolute; inset: 0; pointer-events: none; font-family: var(--font-sans); }
+.drive-hud button, .drive-hud a, .drive-hud .dh-card, .drive-hud .dh-map { pointer-events: auto; }
+.drive-hud .accent { color: var(--accent); }
+.drive-hud .dim { opacity: 0.55; }
+.dh-glass {
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.dh-top { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 1.1rem var(--pad); }
+.dh-brand, .dh-btn, .dh-pass, .dh-speed, .dh-minimap, .dh-card, .dh-help {
+  background: color-mix(in oklab, var(--bg) 78%, transparent);
+  border: 1px solid var(--line);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.dh-brand { white-space: nowrap; font-size: 0.78rem; padding: 0.55rem 0.95rem; border-radius: 999px; }
+.dh-tools { display: flex; gap: 0.4rem; }
+.dh-btn, .dh-pass { height: 38px; padding: 0 0.9rem; border-radius: 999px; font-size: 0.75rem; transition: border-color 0.3s, background 0.3s; }
+.dh-btn:hover, .dh-pass:hover { border-color: var(--fg); }
+.dh-park { background: var(--fg); color: var(--bg); }
+.dh-park .dim { margin-left: 0.3rem; }
+.dh-pass-n { color: var(--accent); font-weight: 600; }
+
+.dh-announce {
+  position: absolute; top: 16%; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 0.3rem; text-align: center;
+  opacity: 0; pointer-events: none; color: var(--fg);
+  text-shadow: 0 0 22px var(--bg), 0 0 6px var(--bg);
+  transition: left 0.6s var(--ease);
+}
+.dh-announce.show { animation: dh-announce 2.6s var(--ease) forwards; }
+.dh-a-place { font-size: 0.78rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); text-shadow: none; background: color-mix(in oklab, var(--bg) 80%, transparent); padding: 0.25em 0.8em; border-radius: 999px; }
+.drive-hud:has(.dh-card.open) .dh-announce { left: calc((100% - min(400px, 100vw) - var(--pad)) / 2); }
+.dh-a-name { font-family: var(--font-display); font-style: italic; font-size: clamp(2.4rem, 6vw, 5rem); line-height: 1; }
+@keyframes dh-announce {
+  0% { opacity: 0; transform: translate(-50%, 14px); letter-spacing: 0.08em; }
+  15%, 75% { opacity: 1; transform: translate(-50%, 0); letter-spacing: 0; }
+  100% { opacity: 0; transform: translate(-50%, -10px); }
+}
+
+.dh-bottom { position: absolute; left: var(--pad); bottom: 1.25rem; display: flex; align-items: flex-end; gap: 0.75rem; }
+.dh-minimap { width: 180px; height: 180px; border-radius: 50%; }
+.dh-speed { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 84px; height: 84px; border-radius: 50%; }
+.dh-mph { font-family: var(--font-display); font-size: 2rem; line-height: 1; font-variant-numeric: tabular-nums; }
+.dh-speed .mono { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; }
+.dh-speed.boost { border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 30%, transparent); }
+.dh-speed.boost .dh-mph { color: var(--accent); }
+
+.dh-help {
+  position: absolute; left: 50%; bottom: 1.25rem; transform: translateX(-50%);
+  font-size: 0.72rem; padding: 0.55rem 1rem; border-radius: 999px; white-space: nowrap;
+  transition: opacity 1s;
+}
+.dh-help.fade { opacity: 0; }
+
+/* ---------- Card ---------- */
+.dh-card {
+  position: absolute; top: 5rem; right: var(--pad); bottom: 1.25rem;
+  width: min(400px, calc(100vw - 2 * var(--pad)));
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  transform: translateX(calc(100% + 3rem)); opacity: 0;
+  transition: transform 0.6s var(--ease), opacity 0.4s;
+  display: flex; flex-direction: column;
+  background: color-mix(in oklab, var(--bg) 90%, transparent);
+}
+.dh-card.compact { bottom: auto; max-height: calc(100% - 6.25rem); }
+.dh-card.open { transform: none; opacity: 1; }
+.dh-card-x { position: absolute; top: 0.7rem; right: 0.7rem; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); font-size: 1.1rem; line-height: 1; z-index: 1; background: var(--bg); }
+.dh-card-x:hover { border-color: var(--fg); }
+.dh-card-body { overflow-y: auto; padding: 1.4rem 1.4rem 1.6rem; overscroll-behavior: contain; touch-action: pan-y; user-select: text; }
+.dh-card-body h3 { font-family: var(--font-display); font-size: 2rem; line-height: 1.05; margin: 0.3rem 2rem 0.6rem 0; letter-spacing: -0.02em; }
+.dh-card-body h4 { font-family: var(--font-display); font-size: 1.15rem; margin: 1rem 0 0.35rem; }
+.dh-card-body p, .dh-card-body li { font-size: 0.9rem; line-height: 1.5; color: var(--fg-2); }
+.dh-card-body ul { padding-left: 1.1rem; margin: 0.4rem 0; display: grid; gap: 0.3rem; }
+.dh-card-body a { color: var(--accent); font-family: var(--font-mono); font-size: 0.78rem; }
+.dc-eyebrow { font-family: var(--font-mono); font-size: 0.68rem !important; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent) !important; }
+.dc-blurb { font-size: 1rem !important; color: var(--fg) !important; }
+.dc-lead { color: var(--fg) !important; font-weight: 500; }
+.dc-h { font-family: var(--font-mono) !important; font-size: 0.7rem !important; letter-spacing: 0.14em; text-transform: uppercase; color: var(--fg-3); margin-top: 1.4rem !important; }
+.dc-dim { color: var(--fg-3); font-size: 0.8rem; }
+.dc-item { padding: 0.9rem 0; border-top: 1px solid var(--line); }
+.dc-item h4 { margin: 0.2rem 0 0.2rem; }
+.dc-item p { margin-bottom: 0.4rem; }
+.dc-item .dc-org { color: var(--fg); margin: 0; }
+.dc-meta { font-family: var(--font-mono); font-size: 0.68rem; color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.08em; }
+.dc-chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.4rem 0 0.6rem; }
+.dc-chips span { font-family: var(--font-mono); font-size: 0.68rem; padding: 0.2em 0.6em; border-radius: 999px; border: 1px solid var(--line); color: var(--fg-2); }
+.dc-actions { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: center; margin-top: 0.8rem; }
+.dh-card-body .dc-btn {
+  display: inline-flex; align-items: center; padding: 0.6em 1.1em; border-radius: 999px;
+  background: var(--accent); color: var(--accent-ink); font-size: 0.78rem;
+}
+.dc-timeline { list-style: none; padding: 0 !important; display: grid; gap: 0 !important; }
+.dc-timeline li { display: grid; grid-template-columns: 1fr; padding: 0.55rem 0 0.55rem 1rem; border-left: 2px solid var(--line); position: relative; }
+.dc-timeline li::before { content: ''; position: absolute; left: -5px; top: 0.85rem; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.dc-timeline b { color: var(--fg); font-weight: 600; }
+.dc-list { list-style: none; padding: 0 !important; }
+.dc-list li { display: flex; gap: 0.7rem; align-items: center; padding: 0.4rem 0; }
+.dc-list li div { display: flex; flex-direction: column; }
+.dc-list b { color: var(--fg); }
+.dc-play { width: 34px; height: 34px; flex: none; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: 0.8rem; }
+
+/* ---------- Map / passport ---------- */
+.dh-map { position: absolute; inset: 0; display: grid; place-items: center; background: rgb(0 0 0 / 0.35); }
+.dh-map[hidden] { display: none; }
+.dh-map-panel {
+  width: min(760px, calc(100vw - 2rem)); max-height: calc(100vh - 4rem); overflow-y: auto;
+  padding: 1.5rem; border-radius: var(--radius); background: var(--bg); border: 1px solid var(--line); box-shadow: var(--shadow);
+  animation: dh-pop 0.45s var(--ease);
+}
+@keyframes dh-pop { from { transform: scale(0.94) translateY(10px); opacity: 0; } }
+.dh-map-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.dh-map-head h3 { font-family: var(--font-display); font-size: 2rem; }
+.dh-map-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+.dh-map-cols .mono { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.4rem; }
+.dh-dest { display: flex; gap: 0.75rem; align-items: center; width: 100%; text-align: left; padding: 0.55rem 0.6rem; border-radius: 12px; transition: background 0.25s; }
+.dh-dest:hover { background: var(--bg-2); }
+.dh-dest b { display: block; font-size: 0.92rem; }
+.dh-dest small { color: var(--fg-3); font-size: 0.78rem; }
+.dh-dest-road { margin-top: 0.8rem; border-top: 1px solid var(--line); border-radius: 0; padding-top: 1rem; }
+.dh-stamp { width: 30px; height: 30px; flex: none; border-radius: 50%; display: grid; place-items: center; border: 1.5px dashed var(--fg-3); color: transparent; font-size: 0.85rem; }
+.dh-stamp.on { border: 1.5px solid var(--accent); background: var(--accent); color: var(--accent-ink); transform: rotate(-12deg); }
+@media (max-width: 640px) { .dh-map-cols { grid-template-columns: 1fr; } }
+
+/* ---------- Touch ---------- */
+.drive-touch { position: absolute; inset: auto 0 0 0; height: 46%; pointer-events: none; }
+.drive-stick {
+  position: absolute; left: 1.5rem; bottom: 1.5rem; width: 130px; height: 130px; border-radius: 50%;
+  border: 1px solid var(--line); background: color-mix(in oklab, var(--bg) 55%, transparent);
+  pointer-events: auto; touch-action: none;
+}
+.drive-stick span { position: absolute; left: 50%; top: 50%; width: 54px; height: 54px; margin: -27px 0 0 -27px; border-radius: 50%; background: var(--fg); opacity: 0.85; }
+.drive-btns { position: absolute; right: 1.5rem; bottom: 1.5rem; display: flex; gap: 0.8rem; align-items: flex-end; }
+.drive-btns button {
+  pointer-events: auto; touch-action: none; width: 76px; height: 76px; border-radius: 50%;
+  font-family: var(--font-mono); font-size: 0.75rem; border: 1px solid var(--line);
+  background: color-mix(in oklab, var(--bg) 70%, transparent);
+}
+.drive-btns [data-t='boost'] { width: 92px; height: 92px; background: var(--accent); color: var(--accent-ink); }
+.drive-btns button.on { transform: scale(0.92); }
+@media (pointer: coarse) {
+  .dh-help, .dh-speed { display: none; }
+  .dh-bottom { left: auto; right: 1rem; top: 4.6rem; bottom: auto; }
+  .dh-minimap { width: 110px; height: 110px; }
+  .dh-brand .dim, .dh-pass-label { display: none; }
+  .dh-top { padding: 0.9rem 1rem; }
+  .drive-hud:has(.dh-card.open) .dh-announce { left: 50%; }
+  .dh-card { top: auto; bottom: 0; right: 0; left: 0; width: auto; max-height: 52%; border-radius: var(--radius) var(--radius) 0 0; transform: translateY(105%); z-index: 2; }
+  .dh-card.compact { bottom: 0; }
+}

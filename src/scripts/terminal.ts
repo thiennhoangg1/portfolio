@@ -6,6 +6,7 @@ import { ACCENTS, confetti, party, setAccent, setTheme } from './theme';
 import { flashlight, gravity, matrix, crt, flip } from './eggs';
 import { stopScroll, startScroll } from './smooth';
 import { player } from './audio';
+import { startDrive, stopDrive } from './driveMode';
 
 type Out = string | string[];
 type Ctx = { args: string[]; raw: string };
@@ -33,7 +34,7 @@ const commands: Record<string, { desc?: string; run: (c: Ctx) => Out }> = {
       '<b>navigation</b>  ls · cd &lt;page&gt; · open &lt;project&gt; · resume',
       '<b>about</b>       whoami · contact · socials · now · skills',
       '<b>vibes</b>       theme [dark|light] · accent &lt;color&gt; · sound [on|off] · play · pause',
-      '<b>extras</b>      secrets · poem · clear · exit',
+      '<b>extras</b>      drive · secrets · poem · clear · exit',
       '<span class="dim">…and a few commands that aren\'t listed. try things.</span>',
     ],
   },
@@ -113,6 +114,8 @@ const commands: Record<string, { desc?: string; run: (c: Ctx) => Out }> = {
       ];
     },
   },
+  drive: { desc: 'explore the portfolio in 3D', run: () => { close(); setTimeout(startDrive, 250); return 'vroom. (esc to park)'; } },
+  park: { run: () => { stopDrive(); return 'parked.'; } },
   poem: { run: () => `<i>${esc(data().whispers[Math.floor(Math.random() * data().whispers.length)])}</i>` },
   clear: { run: () => { out().innerHTML = ''; return []; } },
   exit: { run: () => { close(); return []; } },
@@ -149,7 +152,7 @@ const commands: Record<string, { desc?: string; run: (c: Ctx) => Out }> = {
   'reset-secrets': { run: () => { resetSecrets(); return 'secrets reset. happy hunting.'; } },
 };
 
-const aliases: Record<string, string> = { '?': 'help', man: 'help', projects: 'ls', email: 'contact', cls: 'clear', q: 'exit', ':q': 'exit', ':q!': 'exit', about: 'whoami' };
+const aliases: Record<string, string> = { '?': 'help', vroom: 'drive', car: 'drive', play3d: 'drive', game: 'drive', man: 'help', projects: 'ls', email: 'contact', cls: 'clear', q: 'exit', ':q': 'exit', ':q!': 'exit', about: 'whoami' };
 
 let el: HTMLElement | null = null;
 let input: HTMLInputElement | null = null;
