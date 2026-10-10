@@ -2,10 +2,20 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Marquee from '../components/Marquee.astro';
-import { education, site, skills, whispers } from '../data/site';
+import { getImage } from 'astro:assets';
+import { education, hobbies, ranks, site, skills, whispers } from '../data/site';
+import chessShot from '../assets/hobbies/chess.png';
+import valorantShot from '../assets/hobbies/valorant.png';
 import { photos } from '../lib/photos';
 
 const collage = photos.slice(0, 5);
+const shots = { chess: chessShot, valorant: valorantShot } as const;
+const proofs = Object.fromEntries(
+  await Promise.all(Object.entries(shots).map(async ([k, img]) => [k, {
+    thumb: (await getImage({ src: img, width: 640, format: 'webp' })).src,
+    full: (await getImage({ src: img, width: 2000, format: 'webp' })).src,
+  }])),
+);
 ---
 
 <Base title="About" description={`About ${site.name}: student, engineer, restaurant manager, poet, songwriter.`}>
@@ -73,6 +83,32 @@ const collage = photos.slice(0, 5);
       </div>
     </div>
   </section>
+
+  <section class="wrap offclock">
+    <p class="eyebrow" data-reveal>Off the clock</p>
+    <h2 class="display offclock-title" data-flip3d>Ranks &amp; <em>hobbies</em></h2>
+    <div class="ranks">
+      {ranks.map((r, i) => {
+        const proof = r.proof ? proofs[r.proof] : null;
+        return (
+          <div class="rank" data-reveal style={`--d:${i * 0.06}s`} data-tilt="6">
+            <span class="mono muted rank-game">{r.game}</span>
+            <span class="display rank-value">{r.rank}</span>
+            {r.detail && <span class="mono muted rank-detail">{r.detail}</span>}
+            {proof && (
+              <a class="rank-proof" href={proof.full} target="_blank" rel="noopener" data-cursor="proof">
+                <img src={proof.thumb} alt={`Screenshot of my ${r.game} profile`} loading="lazy" decoding="async" />
+                <span class="mono">see proof ↗</span>
+              </a>
+            )}
+          </div>
+        );
+      })}
+    </div>
+    <ul class="hobbies" data-reveal>
+      {hobbies.map((h) => <li class="tag">{h}</li>)}
+    </ul>
+  </section>
 </Base>
 
 <style>
@@ -104,6 +140,19 @@ const collage = photos.slice(0, 5);
   }
   .tool-chip:hover { transform: rotate(var(--r)) scale(1.15); background: var(--accent); color: var(--accent-ink); }
 
+  .offclock { padding-block: 6rem 2rem; }
+  .offclock-title { font-size: clamp(2.8rem, 7vw, 6rem); margin: 0.8rem 0 3rem; }
+  .ranks { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
+  .rank { display: flex; flex-direction: column; gap: 0.35rem; padding: 1.3rem; border-radius: var(--radius); border: 1px solid var(--line); background: var(--card); }
+  .rank-game { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; }
+  .rank-value { font-size: clamp(1.8rem, 2.6vw, 2.6rem); line-height: 1; color: var(--accent); }
+  .rank-detail { font-size: 0.72rem; }
+  .rank-proof { margin-top: auto; padding-top: 0.9rem; display: grid; gap: 0.4rem; }
+  .rank-proof img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: left bottom; border-radius: 8px; border: 1px solid var(--line); filter: grayscale(0.5); transition: filter 0.4s; }
+  .rank-proof:hover img { filter: none; }
+  .rank-proof .mono { font-size: 0.7rem; color: var(--fg-2); }
+  .hobbies { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+  @media (max-width: 1100px) { .ranks { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 900px) {
     .about-grid, .facts { grid-template-columns: 1fr; }
     .collage { height: 120vw; }

@@ -1,1 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><style>path{fill:#16130f}@media (prefers-color-scheme:dark){path{fill:#ece7de}}</style><rect width="64" height="64" rx="16" fill="#ff5b2e"/><path d="M32 8c1.6 13.6 10.4 22.4 24 24-13.6 1.6-22.4 10.4-24 24-1.6-13.6-10.4-22.4-24-24 13.6-1.6 22.4-10.4 24-24z"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="arch" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffc08a"/>
+      <stop offset="1" stop-color="#ff5b2e"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".5" cy=".95" r=".7">
+      <stop offset="0" stop-color="#ff5b2e" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#ff5b2e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#0c0c0e"/>
+  <rect width="64" height="64" rx="15" fill="url(#glow)"/>
+  <path d="M12 56C14.5 30 21 10 32 10s17.5 20 20 46" fill="none" stroke="url(#arch)" stroke-width="7" stroke-linecap="round"/>
+  <path d="M32 31c.8 6.2 4.8 10.2 11 11-6.2.8-10.2 4.8-11 11-.8-6.2-4.8-10.2-11-11 6.2-.8 10.2-4.8 11-11z" fill="#fff"/>
+</svg>

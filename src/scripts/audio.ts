@@ -170,7 +170,12 @@ class Engine {
   }
 }
 
-export const player = new Engine();
+// Keep a single engine (and a single <audio>) per tab. Without this, a reloaded
+// copy of this module could start a second player on top of the first, which
+// sounds like an echo.
+const w = window as unknown as { __thPlayer?: Engine };
+w.__thPlayer?.pause();
+export const player = (w.__thPlayer = new Engine());
 
 // --- Visualizer ----------------------------------------------------------------------
 function visualize(canvas: HTMLCanvasElement, isActive: () => boolean, mode: 'bars' | 'ring') {

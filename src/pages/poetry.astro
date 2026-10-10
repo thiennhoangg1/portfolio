@@ -12,7 +12,6 @@ const stanzas = (body = '') =>
 <Base title="Poetry" description="Poems by Thien Hoang.">
   <section class="wrap">
     <h1 class="page-title display" data-split="load">Poetry</h1>
-    <p class="lede" data-reveal>Poems from my Poetry Writing portfolio, Fall 2025: the city at night, rain, exams, family, and the quiet after a long shift.</p>
     <nav class="toc mono" aria-label="Poems" data-reveal>
       {poems.map((p, i) => <a href={`#${p.id}`} class="link-line">{String(i + 1).padStart(2, '0')} {p.data.title}</a>)}
     </nav>

@@ -1,6 +1,6 @@
 ---
 // Persistent overlay UI that survives page navigation.
-import { currently, education, nav, site, skills, whispers } from '../data/site';
+import { currently, education, hobbies, nav, ranks, site, skills, whispers } from '../data/site';
 import { games } from '../data/games';
 
 interface Props {
@@ -8,7 +8,7 @@ interface Props {
   drive: Record<string, unknown>;
 }
 const { projects, drive } = Astro.props;
-const driveData = JSON.stringify({ site, education, skills, currently, games, ...drive });
+const driveData = JSON.stringify({ site, education, skills, currently, games, ranks, hobbies, ...drive });
 const termData = JSON.stringify({
   email: site.email,
   linkedin: site.linkedin,

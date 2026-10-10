@@ -33,7 +33,7 @@ const commands: Record<string, { desc?: string; run: (c: Ctx) => Out }> = {
     desc: 'list commands',
     run: () => [
       '<b>navigation</b>  ls · cd &lt;page&gt; · open &lt;project&gt; · resume',
-      '<b>about</b>       whoami · contact · socials · now · skills',
+      '<b>about</b>       whoami · contact · socials · now · skills · hobbies',
       '<b>vibes</b>       theme [dark|light] · accent &lt;color&gt; · sound [on|off] · play · pause',
       '<b>extras</b>      drive · order · recruiter · secrets · poem · clear · exit',
       '<span class="dim">…and a few commands that aren\'t listed. try things.</span>',
@@ -117,6 +117,7 @@ const commands: Record<string, { desc?: string; run: (c: Ctx) => Out }> = {
   },
   drive: { desc: 'explore the portfolio in 3D', run: () => { close(); setTimeout(startDrive, 250); return 'vroom. (esc to park)'; } },
   park: { run: () => { stopDrive(); return 'parked.'; } },
+  hobbies: { desc: 'ranks & hobbies', run: () => ['chess: 2286 rapid (chess.com)', 'valorant: immortal 3 (peak)', 'tft, overwatch, paladins: grandmaster', 'off the clock: rock climbing, weightlifting, reading'] },
   order: { desc: 'order off my menu', run: () => go('/order') },
   recruiter: { desc: 'calm one-page view', run: () => { setRecruiter(!document.documentElement.classList.contains('recruiter')); return 'switching modes…'; } },
   poem: { run: () => `<i>${esc(data().whispers[Math.floor(Math.random() * data().whispers.length)])}</i>` },
@@ -155,7 +156,7 @@ const commands: Record<string, { desc?: string; run: (c: Ctx) => Out }> = {
   'reset-secrets': { run: () => { resetSecrets(); return 'secrets reset. happy hunting.'; } },
 };
 
-const aliases: Record<string, string> = { '?': 'help', vroom: 'drive', car: 'drive', play3d: 'drive', game: 'drive', man: 'help', projects: 'ls', email: 'contact', cls: 'clear', q: 'exit', ':q': 'exit', ':q!': 'exit', about: 'whoami' };
+const aliases: Record<string, string> = { '?': 'help', ranks: 'hobbies', chess: 'hobbies', valorant: 'hobbies', rank: 'hobbies', vroom: 'drive', car: 'drive', play3d: 'drive', game: 'drive', man: 'help', projects: 'ls', email: 'contact', cls: 'clear', q: 'exit', ':q': 'exit', ':q!': 'exit', about: 'whoami' };
 
 let el: HTMLElement | null = null;
 let input: HTMLInputElement | null = null;

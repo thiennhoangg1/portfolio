@@ -69,6 +69,17 @@ export const whispers = [
   'I love your silence.',
 ];
 
+// Ranks shown on the About page ("Off the clock"). `proof` is a screenshot in src/assets/hobbies.
+export const ranks = [
+  { game: 'Chess', rank: '2286', detail: 'Rapid · Chess.com', proof: 'chess' },
+  { game: 'Valorant', rank: 'Immortal 3', detail: 'Peak rank', proof: 'valorant' },
+  { game: 'Teamfight Tactics', rank: 'Grandmaster', detail: '' },
+  { game: 'Overwatch', rank: 'Grandmaster', detail: '' },
+  { game: 'Paladins', rank: 'Grandmaster', detail: '' },
+];
+
+export const hobbies = ['Rock climbing', 'Weightlifting', 'Reading', 'Chess', 'Competitive games', 'Making music', 'Writing poetry'];
+
 // The "Lab" page's interests section.
 export const interests = [
   { title: 'Music', blurb: 'Music I\'ve made, plus a few songs I love.', href: '/music' },

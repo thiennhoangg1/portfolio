@@ -11,7 +11,7 @@ export type LandmarkModel =
 /** Card sections built from site data (see hud.ts). */
 export type Section =
   | 'about' | 'contact' | 'resume' | 'skills' | 'education' | 'timeline'
-  | 'music' | 'poetry' | 'gallery' | 'lab' | 'secrets' | 'order' | 'games' | 'race';
+  | 'music' | 'poetry' | 'gallery' | 'lab' | 'secrets' | 'order' | 'games' | 'race' | 'hobbies';
 
 export interface Landmark {
   id: LandmarkModel;
@@ -68,8 +68,8 @@ export const landmarks: Landmark[] = [
     id: 'needle', name: 'Space Needle', place: 'Seattle, WA', region: 'us',
     x: -55, z: 92, pad: { x: -55, z: 70 },
     title: 'The lab',
-    blurb: 'Experiments, generative art, and a vault of hidden secrets.',
-    sections: ['lab', 'secrets'],
+    blurb: 'Experiments, hobbies, ranks, and a vault of hidden secrets.',
+    sections: ['hobbies', 'lab', 'secrets'],
   },
   {
     id: 'arcade', name: "Thien's Arcade", place: 'Player 1 · insert coin', region: 'us',

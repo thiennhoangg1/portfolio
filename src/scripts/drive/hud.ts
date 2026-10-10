@@ -14,6 +14,8 @@ export interface DriveData {
   music: { id: string; title: string; mood: string; audio?: string; seed: number; key: string; bpm: number }[];
   poems: { id: string; title: string }[];
   games: Game[];
+  ranks: { game: string; rank: string; detail: string }[];
+  hobbies: string[];
 }
 
 export type Stop =
@@ -81,6 +83,7 @@ export function createHud(host: HTMLElement, data: DriveData, h: HudHandlers) {
         ${laps.length ? `<ol class="dc-laps mono">${laps.map((t) => `<li>${fmt(t)}</li>`).join('')}</ol>` : ''}
         <div class="dc-actions"><button type="button" class="dc-btn" data-travel="race">Go to the start line →</button></div>`;
     },
+    hobbies: () => `<ol class="dc-timeline">${data.ranks.map((r) => `<li><b>${esc(r.game)}: ${esc(r.rank)}</b>${r.detail ? `<span class="dc-dim">${esc(r.detail)}</span>` : ''}</li>`).join('')}</ol><h4>Hobbies</h4>${chips(data.hobbies)}<div class="dc-actions">${nav('/about', 'More about me')}</div>`,
     order: () => `<p>Try a mini version of the POS: ring in my projects and print a ticket.</p><div class="dc-actions">${nav('/order', 'Order off my menu')}</div>`,
     secrets: () => `<p>You've found <b>${found().size} / ${SECRETS.length}</b> secrets. Driving here counts.</p><div class="dc-actions">${nav('/secrets', 'Open the vault')}</div>`,
   };
