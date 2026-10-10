@@ -45,7 +45,7 @@ export const landmarks: Landmark[] = [
     id: 'liberty', name: 'Statue of Liberty', place: 'New York, NY', region: 'us',
     x: -128, z: -82, pad: { x: -118, z: -58 },
     title: 'Hire me',
-    blurb: 'Open to software, ML, and research roles. Always happy to talk.',
+    blurb: 'Open to software engineering and ML roles. Always happy to talk.',
     sections: ['contact', 'resume'],
   },
   {
@@ -53,7 +53,7 @@ export const landmarks: Landmark[] = [
     x: -55, z: -98, pad: { x: -55, z: -70 },
     title: 'Industry work',
     blurb: 'Products shipped with startups and teams, used by real people.',
-    projects: ['portal', 'luna', 'stave-vision'],
+    projects: ['portal', 'luna'],
     experience: ['04-portal', '05-tri-snap'],
     catchKind: 'work',
   },
@@ -76,11 +76,10 @@ export const landmarks: Landmark[] = [
   {
     id: 'pyramids', name: 'Pyramids of Giza', place: 'Giza, Egypt', region: 'world',
     x: 55, z: -102, pad: { x: 55, z: -74 },
-    title: 'Research foundations',
-    blurb: 'ML research on clinical decision support and when models should abstain.',
-    projects: ['thyroid-cds', 'selective-prediction'],
-    experience: ['02-graduate-researcher', '08-test-kitchen'],
-    catchKind: 'research',
+    title: 'ML foundations',
+    blurb: 'Machine learning and computer vision, from satellite images to wood inventory.',
+    projects: ['stave-vision'],
+    experience: ['08-test-kitchen', '02-graduate-researcher'],
   },
   {
     id: 'bigben', name: 'Big Ben', place: 'London, UK', region: 'world',

@@ -41,8 +41,8 @@ const commands: Record<string, { desc?: string; run: (c: Ctx) => Out }> = {
   whoami: {
     desc: 'who is this',
     run: () => [
-      'thien hoang: engineer, researcher, restaurant manager, poet.',
-      'M.S. computer science @ WashU (Dec 2026). researching when AI should say "i don\'t know."',
+      'thien hoang: student, engineer, restaurant manager, poet, songwriter.',
+      'B.S. computer science @ WashU (Dec 2025), M.S. in progress (Dec 2026).',
       'head TA for intro to AI. builds tools people use on real shifts.',
     ],
   },
@@ -80,7 +80,7 @@ const commands: Record<string, { desc?: string; run: (c: Ctx) => Out }> = {
   contact: { run: () => [`email     ${link(`mailto:${data().email}`, data().email)}`, `linkedin  ${link(data().linkedin)}`] },
   socials: { run: () => [`github    ${link(data().github)}`, `linkedin  ${link(data().linkedin)}`] },
   now: {
-    run: () => ['researching selective prediction @ WashU', 'managing a restaurant', 'head TA, intro to AI', 'writing poems in the notes app at 2am'],
+    run: () => ['finishing an M.S. in CS @ WashU', 'managing a restaurant', 'head TA, intro to AI', 'writing poems in the notes app at 2am'],
   },
   skills: { run: () => ['python · typescript · sql · swift · java · c++ · r', 'react · node · postgres · pytorch · tensorflow · opencv · yolov8 · coreml · docker'] },
   theme: {

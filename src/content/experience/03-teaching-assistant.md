@@ -8,5 +8,8 @@ order: 3
 current: true
 tags: [AI, Data Science, Teaching]
 ---
-- Head TA for CSE 412 (Intro to Artificial Intelligence) and CSE 3050 (Responsible Data Science).
-- Also a TA for Mobile App Development, Computer Engineering, and Intro to Data Science.
+- Head TA, CSE 412: Intro to Artificial Intelligence.
+- Head TA, CSE 3050: Responsible Data Science.
+- TA, Mobile App Development.
+- TA, Computer Engineering.
+- TA, Intro to Data Science.

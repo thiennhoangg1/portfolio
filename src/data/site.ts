@@ -4,15 +4,15 @@ export const site = {
   name: 'Thien Hoang',
   first: 'Thien',
   last: 'Hoang',
-  title: 'Thien Hoang: engineer, researcher, writer',
+  title: 'Thien Hoang: student & engineer',
   description:
-    'Thien Hoang builds AI and software that people actually use: ML research at WashU, full-stack products, and restaurant software, plus music and poetry on the side.',
+    'Thien Hoang is a computer science student and engineer at WashU who builds software people actually use: restaurant tools, full-stack products, apps, and games, plus music and poetry on the side.',
   email: 'h.thien@wustl.edu',
   linkedin: 'https://www.linkedin.com/in/thien-hoang1',
   github: 'https://github.com/thiennhoangg1',
   location: 'St. Louis, MO',
   timezone: 'America/Chicago',
-  roles: ['software engineer', 'ML researcher', 'restaurant manager', 'poet', 'music maker', 'head TA'],
+  roles: ['engineer', 'student', 'restaurant manager', 'poet', 'songwriter'],
 };
 
 export const nav = [
@@ -27,10 +27,10 @@ export const nav = [
 ];
 
 export const currently = [
-  { label: 'Researching', value: 'when ML models should abstain' },
   { label: 'Managing', value: 'a restaurant, Cafe Mochi' },
   { label: 'Teaching', value: 'Head TA, Intro to AI' },
   { label: 'Finishing', value: 'M.S. in CS, Dec 2026' },
+  { label: 'Graduated', value: 'B.S. in Computer Science, WashU, Dec 2025' },
 ];
 
 export const education = {

@@ -5,6 +5,7 @@ year: "2025"
 role: Co-founder & lead engineer
 stack: [Swift, CoreML, LLMs]
 kind: work
+featured: true
 order: 5
 link: https://tri-snap.com
 ---

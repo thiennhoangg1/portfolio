@@ -5,6 +5,7 @@ year: "2025"
 role: Software developer
 stack: [React, TypeScript, Node.js, PostgreSQL]
 kind: work
+featured: true
 order: 6
 link: https://portalcareerdiscovery.com
 ---

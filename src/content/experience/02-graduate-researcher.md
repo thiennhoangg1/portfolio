@@ -3,10 +3,8 @@ role: Graduate Researcher
 org: Washington University in St. Louis
 location: St. Louis, MO
 start: Jan 2026
-end: Present
+end: Jun 2026
 order: 2
-current: true
-tags: [PyTorch, TensorFlow, Responsible AI]
+tags: [PyTorch, TensorFlow, Computer vision]
 ---
-- Researching selective prediction and abstention, studying when an AI model should ethically defer an uncertain prediction. Advised by Prof. Athena Tabakhi.
-- Implementing and evaluating deep learning classifiers on the EuroSAT remote-sensing dataset to analyze confidence, calibration, and abstention behavior.
+- Taught image classifiers to know when to stay quiet: added an "abstain" option so a model can skip a satellite image it isn't sure about instead of forcing a yes or no that could be completely wrong, then measured how much that improves the answers it does give.

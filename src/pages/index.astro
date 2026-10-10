@@ -6,7 +6,6 @@ import ProjectCard from '../components/ProjectCard.astro';
 import Marquee from '../components/Marquee.astro';
 import { currently, site, skills, whispers } from '../data/site';
 import { photos } from '../lib/photos';
-import { landmarks } from '../data/drive';
 
 const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
 const featured = projects.filter((p) => p.data.featured);
@@ -32,7 +31,7 @@ const beyond = [
   <section class="hero" data-trail={trailSrcs}>
     <canvas class="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
     <div class="wrap hero-inner">
-      <p class="eyebrow hero-eyebrow" data-reveal>Engineer · Researcher · Writer, based in St. Louis</p>
+      <p class="eyebrow hero-eyebrow" data-reveal>Student · Engineer, based in St. Louis</p>
       <h1 class="hero-name display" data-explode data-cursor="hold" aria-label={site.name}>
         <span class="row" aria-hidden="true">{nameChars(site.first).map((c, i) => <span class="char" style={`--i:${i}`}>{c}</span>)}</span>
         <span class="row italic" aria-hidden="true">{nameChars(site.last).map((c, i) => <span class="char" style={`--i:${i + 6}`}>{c}</span>)}<span class="char dot">.</span></span>
@@ -57,11 +56,9 @@ const beyond = [
   <section id="intro" class="wrap intro">
     <p class="eyebrow" data-reveal>Hello</p>
     <p class="intro-text display" data-split>
-      I build AI and software that holds up in the real world, from research on{' '}
-      <span class="whisper" data-line={whispers[4]}>when models should abstain</span>{' '}
-      to the touchscreen system behind a busy{' '}
-      <span class="whisper" data-line={whispers[0]}>restaurant</span>.{' '}
-      Off the clock I write <span class="whisper" data-line={whispers[2]}>poems</span> and make music.
+      Hi, I'm Thien. I build things that hold up in the real world, from the tools that keep a busy{' '}
+      <span class="whisper" data-line={whispers[0]}>restaurant</span> running to video games, apps,
+      and computer vision. Off the clock I write <span class="whisper" data-line={whispers[2]}>poems</span> and make music.
     </p>
     <div class="currently">
       {currently.map((c, i) => (
@@ -94,8 +91,7 @@ const beyond = [
       <p class="eyebrow" data-reveal>Or take the scenic route</p>
       <h2 class="display section-title" data-flip3d>Drive through my <em>work</em></h2>
       <p class="drive-cta-blurb muted" data-reveal>
-        A tiny 3D world with the Gateway Arch, the Golden Gate, the Eiffel Tower, and {landmarks.length - 3} more landmarks.
-        Each one holds a piece of my resume, and the billboards on Resume Highway tell the rest.
+        A tiny 3D world with landmarks that each hold a piece of my resume.
       </p>
       <div class="drive-cta-actions" data-reveal>
         <button type="button" class="btn solid" data-drive-toggle data-magnetic>Start driving →</button>
