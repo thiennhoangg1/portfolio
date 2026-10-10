@@ -11,7 +11,7 @@ const projects = defineCollection({
       year: z.string(),
       role: z.string(),
       stack: z.array(z.string()),
-      kind: z.enum(['work', 'research', 'side']),
+      kind: z.enum(['work', 'side', 'game']),
       order: z.number().default(99),
       featured: z.boolean().default(false),
       cover: image().optional(),
@@ -37,12 +37,17 @@ const experience = defineCollection({
 
 const poems = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/poems' }),
-  schema: z.object({
-    title: z.string(),
-    date: z.string(),
-    sample: z.boolean().default(false),
-    order: z.number().default(99),
-  }),
+  // The body is the plain text (for screen readers, search, and read-aloud).
+  // `page` is an image of the poem exactly as designed: colors, spacing, erasure.
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      date: z.string(),
+      sample: z.boolean().default(false),
+      order: z.number().default(99),
+      page: image().optional(),
+      art: image().optional(),
+    }),
 });
 
 const music = defineCollection({
@@ -50,10 +55,13 @@ const music = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.string(),
-    mood: z.string(),
+    mood: z.string().default(''),
+    artist: z.string().default('Thien Hoang'),
     // Path under /public (e.g. "/music/song.mp3"). Without it, the player
     // synthesizes a generative sketch from `seed`, `key`, and `bpm`.
     audio: z.string().optional(),
+    /** Running time shown on the music page, e.g. "3:26". */
+    length: z.string().optional(),
     embed: z.string().url().optional(),
     seed: z.number().default(1),
     key: z.enum(['C', 'D', 'E', 'F', 'G', 'A', 'B']).default('C'),

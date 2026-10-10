@@ -19,8 +19,8 @@ const pins = [[-90, 38], [-74, 40], [-122, 37], [-103, 44], [-122, 47], [31, 30]
 
 const nameChars = (s: string) => [...s].map((c) => (c === ' ' ? ' ' : c));
 const beyond = [
-  { title: 'Music', href: '/music', blurb: 'Sketches, loops, half-finished songs', photo: photos[2] },
-  { title: 'Poetry', href: '/poetry', blurb: 'Short poems from long shifts', photo: photos[5] },
+  { title: 'Music', href: '/music', blurb: 'Music I\'ve made and songs I love', photo: photos[2] },
+  { title: 'Poetry', href: '/poetry', blurb: 'Poems from my Fall 2025 portfolio', photo: photos[5] },
   { title: 'Gallery', href: '/gallery', blurb: 'Light hitting things', photo: photos[8] },
   { title: 'Lab', href: '/lab', blurb: 'Experiments & everything else', photo: photos[11] },
 ];
@@ -148,6 +148,20 @@ const beyond = [
     <a href="/experience" class="btn" data-magnetic>Full timeline →</a>
   </section>
 
+  <!-- Order up -->
+  <section class="wrap order-cta" data-reveal>
+    <a href="/order" class="order-card" data-cursor="order">
+      <span class="order-ticket mono" aria-hidden="true">
+        <span>TICKET #0423</span><span>1 × Restaurant POS</span><span>2 × React</span><span>1 × Head TA</span><span class="order-rule"></span><span>TOTAL · one conversation</span>
+      </span>
+      <span class="order-text">
+        <span class="eyebrow">Hungry for more?</span>
+        <span class="display order-title">Order off my <em>menu</em> →</span>
+        <span class="muted">A tiny version of the POS I built for the restaurant. Ring in projects and skills, and print a ticket you can send me.</span>
+      </span>
+    </a>
+  </section>
+
   <!-- Beyond the code -->
   <section class="wrap beyond">
     <p class="eyebrow" data-reveal>Beyond the code</p>
@@ -272,6 +286,16 @@ const beyond = [
     .exp-row { grid-template-columns: 2rem 1fr; }
     .exp-org, .exp-date { grid-column: 2; }
   }
+
+  .order-cta { padding-block: 2rem 4rem; }
+  .order-card { display: grid; grid-template-columns: auto 1fr; gap: clamp(1.5rem, 4vw, 4rem); align-items: center; padding: clamp(1.5rem, 4vw, 3rem); border-radius: var(--radius); background: var(--bg-2); border: 1px solid var(--line); transition: background 0.5s var(--ease); }
+  .order-card:hover { background: color-mix(in oklab, var(--accent) 14%, var(--bg-2)); }
+  .order-ticket { display: grid; gap: 0.2rem; width: 220px; padding: 1.2rem 1rem 1.6rem; background: #fbfaf6; color: #1c1a17; font-size: 0.72rem; box-shadow: var(--shadow); transform: rotate(-4deg); transition: transform 0.7s var(--ease); mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 12px 100%; }
+  .order-card:hover .order-ticket { transform: rotate(2deg) translateY(-6px); }
+  .order-rule { border-top: 1px dashed #b8b2a6; margin: 0.3rem 0; }
+  .order-text { display: grid; gap: 0.8rem; }
+  .order-title { font-size: clamp(2rem, 4.5vw, 3.6rem); line-height: 1.05; }
+  @media (max-width: 700px) { .order-card { grid-template-columns: 1fr; } .order-ticket { justify-self: center; } }
 
   .beyond { padding-block: 6rem 2rem; }
   .beyond-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; margin-top: 3rem; }

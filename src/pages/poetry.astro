@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 
 const poems = (await getCollection('poems')).sort((a, b) => a.data.order - b.data.order);
@@ -11,7 +12,7 @@ const stanzas = (body = '') =>
 <Base title="Poetry" description="Poems by Thien Hoang.">
   <section class="wrap">
     <h1 class="page-title display" data-split="load">Poetry</h1>
-    <p class="lede" data-reveal>Short poems about kitchens, code, family, and the quiet after a long shift.</p>
+    <p class="lede" data-reveal>Poems from my Poetry Writing portfolio, Fall 2025: the city at night, rain, exams, family, and the quiet after a long shift.</p>
     <nav class="toc mono" aria-label="Poems" data-reveal>
       {poems.map((p, i) => <a href={`#${p.id}`} class="link-line">{String(i + 1).padStart(2, '0')} {p.data.title}</a>)}
     </nav>
@@ -25,11 +26,29 @@ const stanzas = (body = '') =>
           {p.data.sample && <span class="sample-badge">sample</span>}
           <h2 class="display" data-split>{p.data.title}</h2>
         </header>
-        <div class="poem-body">
-          {stanzas(p.body).map((st) => (
-            <p class="stanza">{st.map((line) => <span class="poem-line">{line}</span>)}</p>
-          ))}
-        </div>
+        {p.data.page ? (
+          <div class="poem-pages">
+            {p.data.art && (
+              <figure class="poem-page" data-reveal>
+                <Image src={p.data.art} alt={`Drawing for ${p.data.title}: a burning house, an overturned car, staircases to nowhere, a sealed door, the sun and the moon.`} widths={[600, 900, 1171]} sizes="(max-width: 800px) 92vw, 50vw" />
+              </figure>
+            )}
+            <figure class="poem-page" data-reveal>
+              <Image src={p.data.page} alt="" aria-hidden="true" widths={[700, 1100, 1530]} sizes="(max-width: 800px) 92vw, 50vw" />
+            </figure>
+            <div class="sr-only">
+              {stanzas(p.body).map((st) => (
+                <p>{st.map((line) => <span class="poem-line">{line}<br /></span>)}</p>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div class="poem-body">
+            {stanzas(p.body).map((st) => (
+              <p class="stanza">{st.map((line) => <span class="poem-line">{line}</span>)}</p>
+            ))}
+          </div>
+        )}
         <button type="button" class="speak mono link-line" data-speak data-cursor="listen">read aloud</button>
       </article>
     ))}
@@ -46,6 +65,9 @@ const stanzas = (body = '') =>
   .poem h2 { font-size: clamp(2.6rem, 6vw, 5rem); font-style: italic; }
   .poem-body { font-family: var(--font-display); font-size: clamp(1.25rem, 1.8vw, 1.6rem); line-height: 1.6; font-variation-settings: 'opsz' 24; }
   .stanza + .stanza { margin-top: 1.4em; }
+  .poem-pages { display: grid; gap: 1.2rem; }
+  .poem-page { margin: 0; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); box-shadow: var(--shadow); background: #fff; }
+  .poem-page img { display: block; width: 100%; height: auto; }
   .poem-line { display: block; }
   :global(html.js) .poem-line { opacity: 0; filter: blur(6px); transform: translateY(0.4em); transition: opacity 1s var(--ease), filter 1s var(--ease), transform 1s var(--ease); }
   :global(html.js) .poem-line:global(.in) { opacity: 1; filter: none; transform: none; }

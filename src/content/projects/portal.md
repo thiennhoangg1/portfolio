@@ -8,6 +8,7 @@ kind: work
 featured: true
 order: 6
 link: https://portalcareerdiscovery.com
+cover: ./images/portal.png
 ---
 
 Full-stack work on an AI-driven platform that helps students discover careers.

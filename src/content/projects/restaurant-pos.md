@@ -1,5 +1,5 @@
 ---
-title: Restaurant POS & Kiosk
+title: Cafe Mochi POS & Kiosk
 tagline: A touchscreen point-of-sale, time clock, and payroll system for a working restaurant.
 year: "2026"
 role: Solo developer

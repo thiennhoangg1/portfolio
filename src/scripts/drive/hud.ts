@@ -2,15 +2,18 @@
 // speedometer, quick-travel map, and controls help.
 import { landmarks, world, type Landmark, type Section } from '../../data/drive';
 import { found, SECRETS } from '../secrets';
+import type { Game } from '../../data/games';
+import { fmt, type RaceState } from './race';
 
 export interface DriveData {
   site: { name: string; roles: string[]; description: string; email: string; linkedin: string; github: string; location: string };
   education: { school: string; degrees: string[]; honors: string[]; coursework: string[] };
   skills: { languages: string[]; tools: string[] };
-  projects: { slug: string; title: string; tagline: string; kind: 'work' | 'research' | 'side'; year: string; role: string; stack: string[] }[];
+  projects: { slug: string; title: string; tagline: string; kind: 'work' | 'side' | 'game'; year: string; role: string; stack: string[] }[];
   experience: { id: string; role: string; org: string; location: string; start: string; end: string; tags: string[]; bullets: string[] }[];
   music: { id: string; title: string; mood: string; audio?: string; seed: number; key: string; bpm: number }[];
   poems: { id: string; title: string }[];
+  games: Game[];
 }
 
 export type Stop =
@@ -22,6 +25,7 @@ export interface HudHandlers {
   travel(id: string): void;
   navigate(href: string): void;
   play(trackId: string): void;
+  laps(): number[];
 }
 
 const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -34,7 +38,8 @@ export function assignProjects(data: DriveData) {
   const placed = new Set(landmarks.flatMap((l) => l.projects ?? []));
   const extra = new Map<string, string[]>();
   for (const p of data.projects) {
-    if (placed.has(p.slug)) continue;
+    // Games live in the Arcade via src/data/games.ts.
+    if (placed.has(p.slug) || p.kind === 'game') continue;
     const lm = landmarks.find((l) => l.catchKind === p.kind) ?? landmarks.find((l) => l.id === 'tokyo')!;
     extra.set(lm.id, [...(extra.get(lm.id) ?? []), p.slug]);
   }
@@ -67,6 +72,16 @@ export function createHud(host: HTMLElement, data: DriveData, h: HudHandlers) {
     poetry: () => `<ul class="dc-list">${data.poems.map((p) => `<li><div><b>${esc(p.title)}</b></div></li>`).join('')}</ul><div class="dc-actions">${nav('/poetry', 'Read the poems')}</div>`,
     gallery: () => `<div class="dc-actions">${nav('/gallery', 'Photo gallery')}</div>`,
     lab: () => `<p>Generative art, interests, and what I'm up to now.</p><div class="dc-actions">${nav('/lab', 'Visit the Lab')}</div>`,
+    games: () => data.games.length
+      ? data.games.map((g, i) => `<article class="dc-item"><div class="dc-meta">${esc([g.made, g.year].filter(Boolean).join(' · '))}</div><h4>${esc(g.title)}</h4><p>${esc(g.blurb)}</p><div class="dc-actions">${g.embed ? `<button type="button" class="dc-btn" data-game="${i}">Play here ▶</button>` : ''}${g.play ? ext(g.play, 'Play') : ''}${g.project ? nav(`/projects/${g.project}`, 'Project page') : ''}${g.video ? ext(g.video, 'Trailer') : ''}${g.repo ? ext(g.repo, 'Code') : ''}</div></article>`).join('')
+      : `<p class="dc-lead">The cabinets are being restocked.</p><p>New games are loading in. In the meantime, try the time trial below.</p>`,
+    race: () => {
+      const laps = h.laps();
+      return `<h4>Time trial</h4><p>Drive through the checkered gate on the ring road, hit all three checkpoints, and come back around. Your best lap leaves a ghost car to race.</p>
+        ${laps.length ? `<ol class="dc-laps mono">${laps.map((t) => `<li>${fmt(t)}</li>`).join('')}</ol>` : ''}
+        <div class="dc-actions"><button type="button" class="dc-btn" data-travel="race">Go to the start line →</button></div>`;
+    },
+    order: () => `<p>Try a mini version of the POS: ring in my projects and print a ticket.</p><div class="dc-actions">${nav('/order', 'Order off my menu')}</div>`,
     secrets: () => `<p>You've found <b>${found().size} / ${SECRETS.length}</b> secrets. Driving here counts.</p><div class="dc-actions">${nav('/secrets', 'Open the vault')}</div>`,
   };
 
@@ -112,6 +127,7 @@ export function createHud(host: HTMLElement, data: DriveData, h: HudHandlers) {
           <button type="button" class="dh-btn dh-park mono" data-dh-park>Park <span class="dim">esc</span></button>
         </div>
       </div>
+      <div class="dh-race mono" hidden><span class="dh-race-t">0:00.00</span><span class="dh-race-cp"></span><span class="dh-race-best dim"></span></div>
       <div class="dh-announce" aria-live="polite"><span class="dh-a-place mono"></span><span class="dh-a-name"></span></div>
       <aside class="dh-card" aria-live="polite"><button type="button" class="dh-card-x" aria-label="Close card">×</button><div class="dh-card-body"></div></aside>
       <div class="dh-bottom">
@@ -119,6 +135,12 @@ export function createHud(host: HTMLElement, data: DriveData, h: HudHandlers) {
         <div class="dh-speed"><span class="dh-mph">0</span><span class="mono dim">mph</span></div>
       </div>
       <p class="dh-help mono">W A S D / arrows to drive · space drift · shift boost · M map · R reset · esc park</p>
+      <div class="dh-game" hidden>
+        <div class="dh-game-panel">
+          <div class="dh-map-head"><h3 class="dh-game-title"></h3><button type="button" class="dh-btn mono" data-dh-game-close>close ×</button></div>
+          <iframe title="Game" allow="autoplay; fullscreen; gamepad" allowfullscreen></iframe>
+        </div>
+      </div>
       <div class="dh-map" hidden>
         <div class="dh-map-panel">
           <div class="dh-map-head"><h3>Where to?</h3><button type="button" class="dh-btn mono" data-dh-map>close · M</button></div>
@@ -128,6 +150,8 @@ export function createHud(host: HTMLElement, data: DriveData, h: HudHandlers) {
               ${landmarks.filter((l) => l.region === r).map((l) => `<button type="button" class="dh-dest" data-travel="${l.id}"><span class="dh-stamp" data-stamp="${l.id}">✦</span><span><b>${esc(l.name)}</b><small>${esc(l.title)}</small></span></button>`).join('')}
               </div>`).join('')}
           </div>
+          <div class="dh-map-laps" data-dh-laps></div>
+          <button type="button" class="dh-dest dh-dest-road" data-travel="race"><span class="dh-stamp on">⚑</span><span><b>Time trial start line</b><small>Lap the ring road and race your ghost</small></span></button>
           <button type="button" class="dh-dest dh-dest-road" data-travel="highway"><span class="dh-stamp on">↦</span><span><b>Resume Highway</b><small>Billboards with my whole resume, Arch → bridge</small></span></button>
         </div>
       </div>
@@ -152,6 +176,9 @@ export function createHud(host: HTMLElement, data: DriveData, h: HudHandlers) {
     if (a) { e.preventDefault(); h.navigate(a.getAttribute('href')!); return; }
     const play = t.closest<HTMLElement>('[data-play]');
     if (play) { h.play(play.dataset.play!); return; }
+    const game = t.closest<HTMLElement>('[data-game]');
+    if (game) { openGame(Number(game.dataset.game)); return; }
+    if (t.closest('[data-dh-game-close]') || t === gameEl) { closeGame(); return; }
     if (t.closest('[data-dh-park]')) h.park();
     else if (t.closest('[data-dh-map]')) toggleMap();
     else if (t.closest('.dh-card-x')) { dismissed = current; hideCard(); }
@@ -198,9 +225,46 @@ export function createHud(host: HTMLElement, data: DriveData, h: HudHandlers) {
   function toggleMap(force?: boolean) {
     const open = force ?? mapEl.hidden;
     mapEl.hidden = !open;
+    if (open) {
+      const laps = h.laps();
+      $('[data-dh-laps]').innerHTML = laps.length
+        ? `<p class="mono dim">Best laps</p><ol class="dc-laps mono">${laps.map((t) => `<li>${fmt(t)}</li>`).join('')}</ol>`
+        : '';
+    }
     return open;
   }
   const mapOpen = () => !mapEl.hidden;
+
+  const gameEl = $('.dh-game');
+  const frame = gameEl.querySelector('iframe')!;
+  function openGame(i: number) {
+    const g = data.games[i];
+    if (!g?.embed) return;
+    $('.dh-game-title').textContent = g.title;
+    frame.src = g.embed;
+    gameEl.hidden = false;
+    setTimeout(() => frame.focus(), 100);
+  }
+  function closeGame() {
+    gameEl.hidden = true;
+    frame.src = 'about:blank';
+  }
+  const gameOpen = () => !gameEl.hidden;
+
+  const raceEl = $('.dh-race');
+  let raceKey = '';
+  function setRace(r: RaceState) {
+    const show = r.status !== 'idle' || r.near;
+    raceEl.hidden = !show;
+    if (!show) return;
+    raceEl.classList.toggle('live', r.status === 'running');
+    const key = `${r.status}|${r.time.toFixed(2)}|${r.cp}|${r.best}`;
+    if (key === raceKey) return;
+    raceKey = key;
+    $('.dh-race-t').textContent = r.status === 'running' ? fmt(r.time) : r.status === 'armed' ? 'ready · go!' : 'time trial ahead';
+    $('.dh-race-cp').textContent = r.status === 'running' ? `checkpoint ${r.cp}/${r.total}` : '';
+    $('.dh-race-best').textContent = r.best !== null ? `best ${fmt(r.best)}` : '';
+  }
 
   let lastMph = -1;
   function setSpeed(ms: number, boosting: boolean) {
@@ -235,6 +299,11 @@ export function createHud(host: HTMLElement, data: DriveData, h: HudHandlers) {
     c.beginPath(); c.moveTo(mx(-world.ringRadius), mz(0)); c.lineTo(mx(world.ringRadius), mz(0)); c.stroke();
     const ns = Math.sqrt(world.ringRadius ** 2 - world.nsRoadX ** 2);
     for (const x of [-world.nsRoadX, world.nsRoadX]) { c.beginPath(); c.moveTo(mx(x), mz(-ns)); c.lineTo(mx(x), mz(ns)); c.stroke(); }
+    // Checkered start line for the time trial (due south on the ring).
+    for (let i = 0; i < 4; i++) {
+      c.fillStyle = i % 2 ? '#111' : '#fff';
+      c.fillRect(mx(0) - 1.5, mz(world.ringRadius) - 4 + i * 2, 3, 2);
+    }
   }
   function drawMini(car: { x: number; z: number; h: number }, stamps: Set<string>, accent: string, ink: string) {
     const c = mini.getContext('2d')!;
@@ -260,7 +329,7 @@ export function createHud(host: HTMLElement, data: DriveData, h: HudHandlers) {
   }
 
   return {
-    showCard, hideCard, leave, announce, setStamps, setSpeed, toggleMap, mapOpen, drawBase, drawMini,
+    showCard, hideCard, leave, announce, setStamps, setSpeed, toggleMap, mapOpen, gameOpen, closeGame, setRace, drawBase, drawMini,
     get current() { return current; },
     dispose() {
       clearTimeout(announceT);

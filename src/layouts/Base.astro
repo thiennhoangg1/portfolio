@@ -24,7 +24,7 @@ const bullets = (md = '') => md.split('\n').filter((l) => l.startsWith('- ')).ma
 const drive = {
   projects: projects.map((p) => ({ slug: p.id, title: p.data.title, tagline: p.data.tagline, kind: p.data.kind, year: p.data.year, role: p.data.role, stack: p.data.stack })),
   experience: experience.map((e) => ({ id: e.id, role: e.data.role, org: e.data.org, location: e.data.location, start: e.data.start, end: e.data.end, tags: e.data.tags, bullets: bullets(e.body) })),
-  music: music.map((m) => ({ id: m.id, title: m.data.title, mood: m.data.mood, audio: m.data.audio, seed: m.data.seed, key: m.data.key, bpm: m.data.bpm })),
+  music: music.map((m) => ({ id: m.id, title: m.data.title, mood: m.data.mood || (m.data.artist === 'Thien Hoang' ? 'original' : `by ${m.data.artist}`), audio: m.data.audio, seed: m.data.seed, key: m.data.key, bpm: m.data.bpm })),
   poems: poems.map((p) => ({ id: p.id, title: p.data.title })),
 };
 ---
@@ -49,6 +49,8 @@ const drive = {
         d.dataset.theme = t;
         var a = localStorage.getItem('th-accent');
         if (a) d.style.setProperty('--accent', a);
+        if (/[?&]recruiter\b/.test(location.search)) localStorage.setItem('th-recruiter', 'on');
+        if (localStorage.getItem('th-recruiter') === 'on') d.classList.add('recruiter');
         d.classList.add('js');
       })();
     </script>

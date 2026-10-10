@@ -269,3 +269,29 @@ kbd { font-family: var(--font-mono); border: 1px solid var(--line); border-radiu
   #mini-player { left: 50%; transform: translate(-50%, 150%); }
   #mini-player.on { transform: translateX(-50%); }
 }
+
+/* ---------- Recruiter mode ---------- */
+.recruiter-pill { gap: 0.4rem; }
+.recruiter-pill svg { width: 18px; height: 18px; }
+html.recruiter .recruiter-pill { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+@media (max-width: 1180px) { .recruiter-pill-label { display: none; } }
+#recruiter-bar {
+  display: none; position: fixed; left: 50%; bottom: 1.25rem; transform: translateX(-50%); z-index: 9150;
+  align-items: center; gap: 0.4rem 1.1rem; flex-wrap: wrap; justify-content: center;
+  padding: 0.55rem 0.7rem 0.55rem 1.1rem; border-radius: 999px; font-size: 0.75rem;
+  background: var(--fg); color: var(--bg); box-shadow: var(--shadow); max-width: calc(100vw - 2rem);
+}
+#recruiter-bar a { text-decoration: underline; text-underline-offset: 3px; }
+#recruiter-bar button { padding: 0.35em 0.9em; border-radius: 999px; background: var(--bg); color: var(--fg); font: inherit; }
+#recruiter-bar .accent { color: #3ddc84; }
+html.recruiter #recruiter-bar { display: flex; }
+html.recruiter .grain, html.recruiter #sleep, html.recruiter .whisper-pop { display: none; }
+html.recruiter .whisper { border: 0; text-decoration: none; background: none; }
+html.recruiter *, html.recruiter *::before, html.recruiter *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+html.recruiter.js [data-reveal], html.recruiter.js [data-unmask] { opacity: 1; transform: none; clip-path: none; }
+html.recruiter .footer { padding-bottom: 4rem; }
+
+@media print {
+  #chrome, .nav, .menu, .footer, #drive, #recruiter-bar { display: none !important; }
+  body { background: #fff; color: #000; }
+}

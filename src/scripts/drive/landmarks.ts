@@ -408,8 +408,74 @@ function tokyo(): Built {
   return { group: g, colliders: [[0, 0, 6]], height: 50 };
 }
 
+// ---- Local ---------------------------------------------------------------
+
+function neonSign(text: string, w: number, h: number, color: string) {
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = Math.round(512 * (h / w));
+  const x = c.getContext('2d')!;
+  x.fillStyle = '#120a22';
+  x.fillRect(0, 0, c.width, c.height);
+  x.textAlign = 'center';
+  x.textBaseline = 'middle';
+  x.font = `800 ${Math.round(c.height * 0.62)}px "JetBrains Mono Variable", monospace`;
+  x.shadowColor = color;
+  x.shadowBlur = 24;
+  x.fillStyle = color;
+  x.fillText(text, c.width / 2, c.height / 2 + 4);
+  x.shadowBlur = 0;
+  x.fillStyle = '#fff';
+  x.globalAlpha = 0.6;
+  x.fillText(text, c.width / 2, c.height / 2 + 4);
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshStandardMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: 0.9 }));
+}
+
+function arcade(): Built {
+  const g = new THREE.Group();
+  const W = 20, H = 9, D = 12;
+  g.add(mesh(box(W, H, D), 0x2b1d4a, 0, H / 2, 0));
+  g.add(mesh(box(W + 0.6, 0.6, D + 0.6), 0x1a1030, 0, H + 0.3, 0));
+  // Neon trim and sign.
+  g.add(mesh(box(W + 0.2, 0.25, 0.25), 0xff3df2, 0, H - 0.6, D / 2 + 0.1, { emissive: 0xff3df2, emissiveIntensity: 1.4 }));
+  g.add(mesh(box(W + 0.2, 0.25, 0.25), 0x3df2ff, 0, 0.6, D / 2 + 0.1, { emissive: 0x3df2ff, emissiveIntensity: 1.4 }));
+  const sign = neonSign('ARCADE', 14, 3.4, '#ff3df2');
+  sign.position.set(0, H + 2.6, D / 2 - 0.4);
+  g.add(sign);
+  g.add(mesh(box(14.6, 4, 0.4), 0x1a1030, 0, H + 2.6, D / 2 - 0.65));
+  // Door and windows.
+  g.add(mesh(box(4, 5, 0.2), 0x10202a, 0, 2.5, D / 2 + 0.05, { emissive: 0x3df2ff, emissiveIntensity: 0.35 }));
+  for (const wx of [-6.5, 6.5]) g.add(mesh(box(4.5, 3, 0.2), 0x10202a, wx, 4, D / 2 + 0.05, { emissive: 0xffb43d, emissiveIntensity: 0.35 }));
+  // Cabinets out front.
+  const screens = [0x3df2ff, 0xff3df2, 0xb6f03c];
+  [-5, 0, 5].forEach((cx, i) => {
+    const cab = new THREE.Group();
+    cab.add(mesh(box(1.8, 3.4, 1.4), [0x1d3a8a, 0xb02a5e, 0x2a7a3a][i], 0, 1.7, 0));
+    const scr = mesh(box(1.4, 1.1, 0.1), screens[i], 0, 2.4, 0.72, { emissive: screens[i], emissiveIntensity: 1.1 });
+    scr.rotation.x = -0.25;
+    cab.add(scr);
+    cab.add(mesh(box(1.8, 0.5, 1.0), 0x111114, 0, 1.6, 0.9));
+    cab.add(mesh(box(1.9, 0.5, 1.5), 0xffffff, 0, 3.6, 0, { emissive: screens[i], emissiveIntensity: 0.6 }));
+    cab.position.set(cx, 0, D / 2 + 2.2);
+    g.add(cab);
+  });
+  // A pixel invader on the roof.
+  const invader = ['00100000100', '00010001000', '00111111100', '01101110110', '11111111111', '10111111101', '10100000101', '00011011000'];
+  const px = new THREE.BoxGeometry(0.62, 0.62, 0.62);
+  const pmat = mat(0xb6f03c, { emissive: 0xb6f03c, emissiveIntensity: 1.2 });
+  invader.forEach((row, r) => [...row].forEach((ch, cIdx) => {
+    if (ch !== '1') return;
+    const m = new THREE.Mesh(px, pmat);
+    m.position.set((cIdx - 5) * 0.64, H + 9.5 - r * 0.64, -1);
+    m.castShadow = true;
+    g.add(m);
+  }));
+  return { group: g, colliders: [[-6.5, 0, 6.5], [0, 0, 6.5], [6.5, 0, 6.5], [0, 8.2, 6]], height: 17 };
+}
+
 const builders: Record<LandmarkModel, () => Built> = {
-  arch, liberty, goldengate, rushmore, needle, pyramids, bigben, eiffel, colosseum, taj, opera, pisa, tokyo,
+  arch, liberty, goldengate, rushmore, needle, pyramids, bigben, eiffel, colosseum, taj, opera, pisa, tokyo, arcade,
 };
 
 export function buildLandmark(id: LandmarkModel): Built {

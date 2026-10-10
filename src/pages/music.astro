@@ -13,8 +13,7 @@ const tracks = await Promise.all(
   <section class="wrap">
     <h1 class="page-title display" data-split="load">Music</h1>
     <p class="lede" data-reveal>
-      Sketches, loops, and songs I haven't finished on purpose. Press play and keep browsing: the music follows you
-      around the site.
+      Music I've made, plus a couple of songs by Luke Chiang. Press play and keep browsing: the music follows you around the site.
     </p>
     {tracks.some((t) => t.data.sample) && (
       <p class="mono muted note" data-reveal>
@@ -40,10 +39,11 @@ const tracks = await Promise.all(
           <div class="row mono muted">
             <span>{String(i + 1).padStart(2, '0')}</span>
             <span>{t.data.date}</span>
-            <span>{t.data.key} · {t.data.bpm} bpm</span>
+            {t.data.audio ? t.data.length && <span>{t.data.length}</span> : <span>{t.data.key} · {t.data.bpm} bpm</span>}
           </div>
           <h2 class="display">{t.data.title}</h2>
-          <p class="mood mono">{t.data.mood}</p>
+          {t.data.artist !== 'Thien Hoang' && <p class="artist mono">by {t.data.artist}</p>}
+          {t.data.mood && <p class="mood mono">{t.data.mood}</p>}
           <div class="prose muted"><t.Content /></div>
           {t.data.embed ? (
             <iframe src={t.data.embed} title={t.data.title} loading="lazy" allow="autoplay; encrypted-media"></iframe>
@@ -80,6 +80,7 @@ const tracks = await Promise.all(
   .info h2 { font-size: clamp(2rem, 4.5vw, 3.6rem); margin: 0.4rem 0 0.3rem; }
   .track:global(.playing) h2 { font-style: italic; color: var(--accent); }
   .mood { font-size: 0.8rem; color: var(--fg-2); margin-bottom: 0.6rem; }
+  .artist { font-size: 0.8rem; color: var(--accent); margin: -0.2rem 0 0.6rem; }
   .bar { position: relative; height: 40px; margin-top: 1rem; }
   .bar canvas { width: 100%; height: 100%; }
   .bar::after { content: ''; position: absolute; left: 0; bottom: -6px; height: 2px; width: calc(var(--p, 0) * 100%); background: var(--accent); transition: width 0.2s linear; }

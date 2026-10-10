@@ -31,6 +31,7 @@ export const currently = [
   { label: 'Teaching', value: 'Head TA, Intro to AI' },
   { label: 'Finishing', value: 'M.S. in CS, Dec 2026' },
   { label: 'Graduated', value: 'B.S. in Computer Science, WashU, Dec 2025' },
+  { label: 'Learning', value: 'Accounting certification' },
 ];
 
 export const education = {
@@ -57,29 +58,29 @@ export const skills = {
   ],
 };
 
-// Lines that appear when visitors hover over certain words around the site.
-// These are placeholders. Swap in lines from your own poems.
+// Lines that appear when visitors hover over certain words around the site,
+// taken from the poems on /poetry.
 export const whispers = [
-  'the kitchen is loudest right before it goes quiet',
-  'every model is a guess that learned to sound sure',
-  'i keep a list of things that made me stop walking',
-  'some nights the code compiles and the song does not',
-  'to abstain is also an answer',
-  'the last table always stays the longest',
+  'kitchen corner—plastic moonlight. a wedge in my hand, golden, glowing, almost warm.',
+  'the deluge has the courage to say what our eyes don\'t.',
+  'while brilliance feels like a story I tell myself',
+  'the gingkos glow like forgiveness',
+  'hold a stranger\'s hand longer than my own child\'s.',
+  'I love your silence.',
 ];
 
-// Edit these to change the "Lab" page's interests section (placeholder blurbs).
+// The "Lab" page's interests section.
 export const interests = [
-  { title: 'Music', blurb: 'Late-night loops, chords on repeat, and songs that are half finished on purpose.', href: '/music' },
-  { title: 'Poetry', blurb: 'Short poems about kitchens, cities, family, and the space between them.', href: '/poetry' },
-  { title: 'Photography', blurb: 'Mostly phone photos of light hitting things at the right time.', href: '/gallery' },
+  { title: 'Music', blurb: 'Music I\'ve made, plus a few songs I love.', href: '/music' },
+  { title: 'Poetry', blurb: 'Poems about the city at night, rain, exams, and family. Some of them play with color and erasure.', href: '/poetry' },
+  { title: 'Games', blurb: 'Unity games, from a team merge game to platformers and a Zelda-style adventure.', href: '/projects/animal-kingdom' },
   { title: 'Hospitality', blurb: 'Running a dining room teaches systems design faster than any class.', href: '/experience' },
   { title: 'Teaching', blurb: 'Explaining search algorithms at office hours until they click.', href: '/experience' },
   { title: 'Building tools', blurb: 'Small apps that remove one annoying task from someone\'s day.', href: '/projects' },
 ];
 
 export const nowList = {
-  reading: 'Add a book you are reading',
-  listening: 'Add an album on repeat',
-  learning: 'Selective prediction & calibration',
+  reading: 'Dungeon Crawler Carl',
+  listening: 'Pylon by beabadoobee',
+  learning: 'An accounting certification, plus CS for my M.S.',
 };

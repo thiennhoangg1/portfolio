@@ -22,3 +22,7 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# raw song/poetry source files (web versions live in public/music)
+src/assets/songs/
+src/assets/poetry/

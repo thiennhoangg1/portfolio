@@ -1,13 +1,14 @@
 ---
 // Persistent overlay UI that survives page navigation.
 import { currently, education, nav, site, skills, whispers } from '../data/site';
+import { games } from '../data/games';
 
 interface Props {
   projects: { slug: string; title: string; tagline: string }[];
   drive: Record<string, unknown>;
 }
 const { projects, drive } = Astro.props;
-const driveData = JSON.stringify({ site, education, skills, currently, ...drive });
+const driveData = JSON.stringify({ site, education, skills, currently, games, ...drive });
 const termData = JSON.stringify({
   email: site.email,
   linkedin: site.linkedin,
@@ -42,6 +43,14 @@ const termData = JSON.stringify({
     </button>
     <canvas aria-hidden="true"></canvas>
     <span class="mini-title mono"></span>
+  </div>
+
+  <div id="recruiter-bar" class="mono" role="region" aria-label="Recruiter mode">
+    <span><span class="accent">●</span> Recruiter mode · animations off</span>
+    <a href="/resume">One-page resume</a>
+    <a href="/resume.pdf" target="_blank" rel="noopener">PDF ↓</a>
+    <a href={`mailto:${site.email}`}>Email</a>
+    <button type="button" data-recruiter-toggle>Exit ×</button>
   </div>
 
   <div id="drive" hidden role="dialog" aria-modal="true" aria-label="Drive mode" data-drive={driveData}></div>

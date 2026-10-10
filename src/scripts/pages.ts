@@ -103,8 +103,8 @@ function status(h: number, day: number) {
   if (h < 2) return 'probably writing poems';
   if (h < 7) return 'asleep (hopefully)';
   if (h < 9) return 'coffee, then code';
-  if (h < 12) return day === 0 || day === 6 ? 'slow morning' : 'in the lab';
-  if (h < 16) return 'training models / office hours';
+  if (h < 12) return day === 0 || day === 6 ? 'slow morning' : 'in class';
+  if (h < 16) return 'office hours / building something';
   if (h < 22) return 'running the dining room';
   return 'closing up, then music';
 }

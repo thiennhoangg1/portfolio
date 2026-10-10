@@ -1,8 +1,8 @@
 // Custom cursor: a precise dot, a lagging ring, and contextual labels.
-import { finePointer, lerp, pointer, reducedMotion } from './core';
+import { finePointer, lerp, pointer, recruiterMode, reducedMotion } from './core';
 
 export function initCursor() {
-  if (!finePointer()) return;
+  if (!finePointer() || recruiterMode()) return;
   const dot = document.getElementById('cursor-dot');
   const ring = document.getElementById('cursor-ring');
   const label = document.getElementById('cursor-label');

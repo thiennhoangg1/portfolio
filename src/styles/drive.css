@@ -183,3 +183,26 @@ html.driving #sleep { display: none; }
   .dh-card { top: auto; bottom: 0; right: 0; left: 0; width: auto; max-height: 52%; border-radius: var(--radius) var(--radius) 0 0; transform: translateY(105%); z-index: 2; }
   .dh-card.compact { bottom: 0; }
 }
+
+/* ---------- Time trial, laps, arcade ---------- */
+.dh-race {
+  position: absolute; top: 1.1rem; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: baseline; gap: 0.9rem; padding: 0.5rem 1.1rem; border-radius: 999px; font-size: 0.75rem;
+  background: color-mix(in oklab, var(--bg) 78%, transparent); border: 1px solid var(--line);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.dh-race[hidden] { display: none; }
+.dh-race-t { font-size: 1rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.dh-race.live { border-color: var(--accent); }
+.dh-race.live .dh-race-t { color: var(--accent); }
+.dc-laps { padding-left: 1.4rem !important; font-size: 0.85rem; display: grid; gap: 0.15rem; }
+.dc-laps li:first-child { color: var(--accent); font-weight: 600; }
+.dh-map-laps:not(:empty) { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid var(--line); }
+.dh-map-laps .mono { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.dh-card-body button.dc-btn { display: inline-flex; align-items: center; padding: 0.6em 1.1em; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-family: var(--font-mono); font-size: 0.78rem; }
+.dh-game { position: absolute; inset: 0; display: grid; place-items: center; background: rgb(0 0 0 / 0.6); pointer-events: auto; }
+.dh-game[hidden] { display: none; }
+.dh-game-panel { width: min(1000px, calc(100vw - 2rem)); padding: 1rem 1.2rem 1.2rem; border-radius: var(--radius); background: #0e0b18; color: #ece7de; border: 1px solid #ff3df2; box-shadow: 0 0 60px -10px #ff3df2; }
+.dh-game-panel .dh-btn { color: #ece7de; border-color: #3a3050; background: transparent; }
+.dh-game-panel iframe { display: block; width: 100%; aspect-ratio: 16 / 10; max-height: calc(100vh - 9rem); border: 0; border-radius: 10px; background: #000; }
+@media (pointer: coarse) { .dh-race { top: 4.4rem; } }

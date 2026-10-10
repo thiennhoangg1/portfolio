@@ -1,5 +1,6 @@
 ---
 import { nav, site } from '../data/site';
+import { SECRETS } from '../scripts/secrets';
 ---
 
 <header class="nav" transition:persist="nav">
@@ -20,7 +21,11 @@ import { nav, site } from '../data/site';
       <span class="drive-pill-label">drive</span>
     </button>
     <button type="button" class="tool secrets-pill mono" data-term-open data-cursor="⌘K" aria-label="Open terminal and secrets">
-      <span aria-hidden="true">✦</span> <span data-secret-count>0/19</span>
+      <span aria-hidden="true">✦</span> <span data-secret-count>0/{SECRETS.length}</span>
+    </button>
+    <button type="button" class="tool recruiter-pill mono" data-recruiter-toggle data-cursor="calm" aria-label="Recruiter mode: no animations, one-page resume">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16v11H4zM9 8V5.5h6V8M4 13h16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path></svg>
+      <span class="recruiter-pill-label">recruiter</span>
     </button>
     <button type="button" class="tool" data-sound-toggle aria-label="Toggle sound effects" data-cursor="sound">
       <svg viewBox="0 0 24 24" aria-hidden="true" class="i-sound">

@@ -12,6 +12,7 @@ import { Controls } from './controls';
 import { buildLandmark, disposeMaterials } from './landmarks';
 import { accentHex, buildWorld, inLake, label, onBridge, palettes, type Board, type Circle, type Prop } from './world';
 import { createHud, type DriveData, type Stop } from './hud';
+import { createRace, fmt, loadLaps } from './race';
 
 const KEY = 'th-drive';
 type Saved = { x?: number; z?: number; h?: number; stamps?: string[] };
@@ -122,6 +123,7 @@ export async function mount(host: HTMLElement, opts: { onExit(): void; onNavigat
     scene.add(sprite);
     pads.set(lm.id, { beam, ring, label: sprite, baseY });
   }
+  const race = createRace(scene, accent, colliders, world.reserve);
   world.plantTrees();
 
   // ---- Car ----
@@ -157,7 +159,9 @@ export async function mount(host: HTMLElement, opts: { onExit(): void; onNavigat
       const t = data.music.find((m) => m.id === id);
       if (t) player.play(t);
     },
+    laps: loadLaps,
     travel: (id) => {
+      if (id === 'race') { const p = race.startSpot(); teleport(p.x, p.z, p.h); return; }
       if (id === 'highway') { teleport(-140, 2.5, Math.PI / 2); return; }
       const lm = landmarks.find((l) => l.id === id);
       if (!lm) return;
@@ -175,7 +179,7 @@ export async function mount(host: HTMLElement, opts: { onExit(): void; onNavigat
   drawBase();
 
   const controls = new Controls(host, {
-    escape: () => (hud.mapOpen() ? hud.toggleMap(false) : opts.onExit()),
+    escape: () => (hud.gameOpen() ? hud.closeGame() : hud.mapOpen() ? hud.toggleMap(false) : opts.onExit()),
     m: () => hud.toggleMap(),
     r: () => { teleport(W.spawn.x, W.spawn.z, W.spawn.heading); },
   });
@@ -226,6 +230,7 @@ export async function mount(host: HTMLElement, opts: { onExit(): void; onNavigat
   let inside: string | null = null;
 
   function teleport(x: number, z: number, h: number) {
+    race.cancel();
     phys.place(x, z, h);
     phys.onRamp = false;
     sinking = 0;
@@ -248,7 +253,7 @@ export async function mount(host: HTMLElement, opts: { onExit(): void; onNavigat
 
   function physicsStep(dt: number) {
     controls.update();
-    const input = hud.mapOpen() || sinking ? { throttle: 0, steer: 0, brake: true, boost: false } : controls;
+    const input = hud.mapOpen() || hud.gameOpen() || sinking ? { throttle: 0, steer: 0, brake: true, boost: false } : controls;
     const fwd = phys.update(dt, input);
 
     // Ramps.
@@ -442,6 +447,14 @@ export async function mount(host: HTMLElement, opts: { onExit(): void; onNavigat
     const fwd = physicsStep(dt);
     phys.sync(car);
     checkStops();
+    const lap = race.update(dt, phys);
+    hud.setRace(race.state);
+    if (lap) {
+      hud.announce(fmt(lap.finished), lap.best ? (lap.first ? 'first lap · ghost saved' : 'new best lap!') : 'lap complete');
+      blip('secret');
+      if (lap.first) unlock('lap-record');
+      else if (lap.best) confetti(90);
+    }
     updateCamera(dt, fwd, controls.boost);
 
     // Sun and shadows follow the car.
@@ -489,6 +502,7 @@ export async function mount(host: HTMLElement, opts: { onExit(): void; onNavigat
       ro.disconnect();
       controls.dispose();
       hud.dispose();
+      race.dispose();
       world.dispose();
       scene.traverse((o) => {
         const m = o as THREE.Mesh;

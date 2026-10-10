@@ -6,12 +6,12 @@
 
 export type LandmarkModel =
   | 'arch' | 'liberty' | 'goldengate' | 'rushmore' | 'needle'
-  | 'pyramids' | 'bigben' | 'eiffel' | 'colosseum' | 'taj' | 'opera' | 'pisa' | 'tokyo';
+  | 'pyramids' | 'bigben' | 'eiffel' | 'colosseum' | 'taj' | 'opera' | 'pisa' | 'tokyo' | 'arcade';
 
 /** Card sections built from site data (see hud.ts). */
 export type Section =
   | 'about' | 'contact' | 'resume' | 'skills' | 'education' | 'timeline'
-  | 'music' | 'poetry' | 'gallery' | 'lab' | 'secrets';
+  | 'music' | 'poetry' | 'gallery' | 'lab' | 'secrets' | 'order' | 'games' | 'race';
 
 export interface Landmark {
   id: LandmarkModel;
@@ -29,7 +29,7 @@ export interface Landmark {
   projects?: string[];
   experience?: string[];
   /** Unplaced projects of this kind also show up here. */
-  catchKind?: 'work' | 'research' | 'side';
+  catchKind?: 'work' | 'side' | 'game';
 }
 
 export const landmarks: Landmark[] = [
@@ -71,6 +71,13 @@ export const landmarks: Landmark[] = [
     blurb: 'Experiments, generative art, and a vault of hidden secrets.',
     sections: ['lab', 'secrets'],
   },
+  {
+    id: 'arcade', name: "Thien's Arcade", place: 'Player 1 · insert coin', region: 'us',
+    x: -36, z: -54, pad: { x: -36, z: -32 },
+    title: 'Games I made',
+    blurb: 'Step up to a cabinet. Some of these you can play right here.',
+    sections: ['games', 'race'],
+  },
 
   // ---- World ----
   {
@@ -93,6 +100,7 @@ export const landmarks: Landmark[] = [
     x: 55, z: 48, pad: { x: 55, z: 24 },
     title: 'Café life',
     blurb: 'I manage a restaurant, and built the software that runs it.',
+    sections: ['order'],
     projects: ['restaurant-pos', 'tapcount', 'hours-calculator'],
     experience: ['01-cafe-mochi'],
   },
@@ -114,7 +122,7 @@ export const landmarks: Landmark[] = [
     id: 'opera', name: 'Sydney Opera House', place: 'Sydney, Australia', region: 'world',
     x: 60, z: 110, pad: { x: 58, z: 86 },
     title: 'Music',
-    blurb: 'Late-night loops and half-finished songs. Press play.',
+    blurb: 'Music I\'ve made, plus a couple of songs by Luke Chiang. Press play.',
     sections: ['music'],
   },
   {

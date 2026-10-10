@@ -1,0 +1,108 @@
+---
+// One-page resume: everything a recruiter needs, no animation, prints cleanly.
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { education, site, skills } from '../data/site';
+
+const jobs = (await getCollection('experience')).sort((a, b) => a.data.order - b.data.order);
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const bullets = (md = '') => md.split('\n').filter((l) => l.startsWith('- ')).map((l) => l.slice(2).trim());
+const dates = (s: string, e: string) => [s, e].filter(Boolean).join(' – ');
+---
+
+<Base title="Resume" description={`${site.name}: one-page resume. Education, experience, projects, and skills.`}>
+  <article class="wrap resume">
+    <header class="r-head">
+      <div>
+        <h1 class="display">{site.name}</h1>
+        <p class="muted">Student · Engineer · {site.location}</p>
+      </div>
+      <div class="r-contact mono">
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+        <a href={site.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href={site.github} target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="/resume.pdf" class="btn solid r-pdf" target="_blank" rel="noopener">Download PDF ↓</a>
+      </div>
+    </header>
+
+    <section>
+      <h2 class="r-h mono">Education</h2>
+      <div class="r-row">
+        <div>
+          <h3>{education.school}</h3>
+          {education.degrees.map((d) => <p>{d}</p>)}
+          <p class="muted small">Honors: {education.honors.join(', ')}</p>
+          <p class="muted small">Coursework: {education.coursework.join(', ')}</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="r-h mono">Experience</h2>
+      {jobs.map((j) => (
+        <div class="r-row">
+          <div class="r-title">
+            <h3>{j.data.role} <span class="muted">· {j.data.org}</span></h3>
+            <span class="mono muted small">{dates(j.data.start, j.data.end)}</span>
+          </div>
+          <ul>{bullets(j.body).map((b) => <li>{b}</li>)}</ul>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2 class="r-h mono">Projects</h2>
+      {projects.map((p) => (
+        <div class="r-row">
+          <div class="r-title">
+            <h3><a href={`/projects/${p.id}`}>{p.data.title}</a> <span class="muted">· {p.data.role}</span></h3>
+            <span class="mono muted small">{p.data.year}</span>
+          </div>
+          <p>{p.data.tagline}</p>
+          <p class="mono muted small">
+            {p.data.stack.join(' · ')}
+            {p.data.link && <> · <a href={p.data.link} target="_blank" rel="noopener">site ↗</a></>}
+            {p.data.repo && <> · <a href={p.data.repo} target="_blank" rel="noopener">code ↗</a></>}
+          </p>
+        </div>
+      ))}
+    </section>
+
+    <section>
+      <h2 class="r-h mono">Skills</h2>
+      <p><strong>Languages:</strong> {skills.languages.join(', ')}</p>
+      <p><strong>Frameworks &amp; tools:</strong> {skills.tools.join(', ')}</p>
+    </section>
+
+    <p class="r-foot mono muted small">
+      <span class="if-recruiter">Want the fun version? <a href="/" data-recruiter-toggle>Turn off recruiter mode</a>, then press D to drive around my work.</span>
+      <span class="if-normal">Want the fun version? <a href="/">Head back home</a> and press D to drive around my work.</span>
+    </p>
+  </article>
+</Base>
+
+<style>
+  .resume { max-width: 900px; padding-top: 7.5rem; padding-bottom: 4rem; }
+  .r-head { display: flex; justify-content: space-between; align-items: end; gap: 2rem; flex-wrap: wrap; border-bottom: 2px solid var(--fg); padding-bottom: 1.5rem; }
+  .r-head h1 { font-size: clamp(2.6rem, 6vw, 4rem); line-height: 1; }
+  .r-contact { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.2rem; font-size: 0.8rem; }
+  .r-contact a:not(.btn) { text-decoration: underline; text-underline-offset: 3px; }
+  .resume section { padding-top: 2rem; }
+  .r-h { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+  .r-row { padding: 0.9rem 0; border-bottom: 1px solid var(--line); }
+  .r-title { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .r-row h3 { font-size: 1.1rem; font-weight: 600; }
+  .r-row h3 a { text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
+  .r-row ul { margin: 0.4rem 0 0; padding-left: 1.1rem; display: grid; gap: 0.25rem; }
+  .r-row p, .r-row li, .resume section > p { font-size: 0.95rem; line-height: 1.55; }
+  .small { font-size: 0.8rem !important; }
+  .r-foot { margin-top: 2.5rem; }
+  .r-foot a { color: var(--accent); }
+  :global(html.recruiter) .if-normal, :global(html:not(.recruiter)) .if-recruiter { display: none; }
+
+  @media print {
+    .resume { padding-top: 0; max-width: none; }
+    .r-pdf, .r-foot { display: none; }
+    .r-row { break-inside: avoid; }
+  }
+</style>

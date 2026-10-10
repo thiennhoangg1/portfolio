@@ -21,6 +21,8 @@ export const SECRETS = [
   { id: 'vault', title: 'The vault', hint: 'There is a page listing all of these.' },
   { id: 'road-trip', title: 'Road trip', hint: 'There is a car in the nav. Or press D.' },
   { id: 'world-tour', title: 'World tour', hint: 'Collect every passport stamp in drive mode.' },
+  { id: 'order-up', title: 'Order up', hint: 'Send a ticket to the kitchen.' },
+  { id: 'lap-record', title: 'Pole position', hint: 'Finish a lap of the ring road in drive mode.' },
 ] as const;
 
 export type SecretId = (typeof SECRETS)[number]['id'];

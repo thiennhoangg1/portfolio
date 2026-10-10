@@ -10,10 +10,12 @@ import { initEggs } from './eggs';
 import { initMiniPlayer } from './audio';
 import { initClock } from './pages';
 import { initDriveMode } from './driveMode';
+import { initRecruiter } from './recruiter';
 import { found, SECRETS } from './secrets';
 import './motion';
 import './hero';
 import './hero3d';
+import './order';
 
 document.documentElement.classList.add('js');
 
@@ -26,6 +28,7 @@ initEggs();
 initMiniPlayer();
 initClock();
 initDriveMode();
+initRecruiter();
 
 // Secrets counter in the nav.
 const syncSecrets = () => {
@@ -50,7 +53,7 @@ document.addEventListener('click', (e) => {
 document.addEventListener('astro:before-swap', () => document.documentElement.classList.remove('menu-open'));
 
 // Astro replaces <html> attributes on navigation; carry our state over.
-const KEEP = ['js', 'has-cursor', 'crt', 'flashlight', 'lenis', 'lenis-smooth', 'driving'];
+const KEEP = ['js', 'has-cursor', 'crt', 'flashlight', 'lenis', 'lenis-smooth', 'driving', 'recruiter'];
 document.addEventListener('astro:before-swap', (e) => {
   const cur = document.documentElement;
   const next = (e as unknown as { newDocument: Document }).newDocument.documentElement;

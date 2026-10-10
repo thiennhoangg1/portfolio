@@ -7,7 +7,8 @@ stack: [Swift, CoreML, LLMs]
 kind: work
 featured: true
 order: 5
-link: https://tri-snap.com
+link: https://www.tri-snap.com/
+cover: ./images/luna.png
 ---
 
 As co-founder of Tri-Snap, I led engineering for Luna, an iOS app that helps patients figure out where to go for care.

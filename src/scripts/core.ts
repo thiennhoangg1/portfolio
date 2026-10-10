@@ -7,7 +7,9 @@ type PageInit = () => Cleanup;
 const inits: PageInit[] = [];
 let cleanups: (() => void)[] = [];
 
-export const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/** Recruiter mode: a calm, skimmable version of the site (see recruiter.ts). */
+export const recruiterMode = () => document.documentElement.classList.contains('recruiter');
+export const reducedMotion = () => recruiterMode() || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 export const finePointer = () => window.matchMedia('(pointer: fine)').matches;
 
 /** Register a function that runs on every page load and may return a cleanup. */

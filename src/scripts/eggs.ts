@@ -90,7 +90,7 @@ function idle() {
       unlock('sleepy');
     }
     clearTimeout(t);
-    t = window.setTimeout(() => { if (!document.hidden) overlay.classList.add('on'); }, 45000);
+    t = window.setTimeout(() => { if (!document.hidden && !document.documentElement.classList.contains('recruiter')) overlay.classList.add('on'); }, 45000);
   };
   ['pointermove', 'keydown', 'scroll', 'touchstart', 'wheel'].forEach((ev) => window.addEventListener(ev, wake, { passive: true }));
   wake();
@@ -102,6 +102,7 @@ function tabAway() {
   const frames = ['come back 👀', 'come back 👀 ', 'i made more poems', 'come back 👀'];
   document.addEventListener('visibilitychange', () => {
     clearInterval(timer);
+    if (document.documentElement.classList.contains('recruiter')) return;
     if (document.hidden) {
       original = document.title;
       let i = 0;

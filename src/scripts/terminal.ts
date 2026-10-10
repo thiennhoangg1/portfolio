@@ -7,6 +7,7 @@ import { flashlight, gravity, matrix, crt, flip } from './eggs';
 import { stopScroll, startScroll } from './smooth';
 import { player } from './audio';
 import { startDrive, stopDrive } from './driveMode';
+import { setRecruiter } from './recruiter';
 
 type Out = string | string[];
 type Ctx = { args: string[]; raw: string };
@@ -34,7 +35,7 @@ const commands: Record<string, { desc?: string; run: (c: Ctx) => Out }> = {
       '<b>navigation</b>  ls · cd &lt;page&gt; · open &lt;project&gt; · resume',
       '<b>about</b>       whoami · contact · socials · now · skills',
       '<b>vibes</b>       theme [dark|light] · accent &lt;color&gt; · sound [on|off] · play · pause',
-      '<b>extras</b>      drive · secrets · poem · clear · exit',
+      '<b>extras</b>      drive · order · recruiter · secrets · poem · clear · exit',
       '<span class="dim">…and a few commands that aren\'t listed. try things.</span>',
     ],
   },
@@ -80,7 +81,7 @@ const commands: Record<string, { desc?: string; run: (c: Ctx) => Out }> = {
   contact: { run: () => [`email     ${link(`mailto:${data().email}`, data().email)}`, `linkedin  ${link(data().linkedin)}`] },
   socials: { run: () => [`github    ${link(data().github)}`, `linkedin  ${link(data().linkedin)}`] },
   now: {
-    run: () => ['finishing an M.S. in CS @ WashU', 'managing a restaurant', 'head TA, intro to AI', 'writing poems in the notes app at 2am'],
+    run: () => ['finishing an M.S. in CS @ WashU', 'studying for an accounting certification', 'managing a restaurant', 'head TA, intro to AI', 'reading: dungeon crawler carl', 'listening: pylon by beabadoobee'],
   },
   skills: { run: () => ['python · typescript · sql · swift · java · c++ · r', 'react · node · postgres · pytorch · tensorflow · opencv · yolov8 · coreml · docker'] },
   theme: {
@@ -116,6 +117,8 @@ const commands: Record<string, { desc?: string; run: (c: Ctx) => Out }> = {
   },
   drive: { desc: 'explore the portfolio in 3D', run: () => { close(); setTimeout(startDrive, 250); return 'vroom. (esc to park)'; } },
   park: { run: () => { stopDrive(); return 'parked.'; } },
+  order: { desc: 'order off my menu', run: () => go('/order') },
+  recruiter: { desc: 'calm one-page view', run: () => { setRecruiter(!document.documentElement.classList.contains('recruiter')); return 'switching modes…'; } },
   poem: { run: () => `<i>${esc(data().whispers[Math.floor(Math.random() * data().whispers.length)])}</i>` },
   clear: { run: () => { out().innerHTML = ''; return []; } },
   exit: { run: () => { close(); return []; } },
