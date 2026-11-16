@@ -69,6 +69,24 @@ html:not(.has-cursor) #cursor-dot, html:not(.has-cursor) #cursor-ring, html:not(
 }
 .links a:hover { background: var(--line); }
 .links a.active { background: var(--fg); color: var(--bg); }
+.more { position: relative; }
+.more-btn {
+  font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.03em;
+  padding: 0.45em 0.9em; border-radius: 999px; transition: background 0.3s;
+}
+.more-btn span { font-size: 0.65em; }
+.more:hover .more-btn, .more:focus-within .more-btn { background: var(--line); }
+.more-list {
+  position: absolute; top: 100%; right: 0; min-width: 9rem; margin-top: 0.4rem;
+  display: grid; padding: 0.3rem; border-radius: 14px;
+  background: var(--bg); border: 1px solid var(--line); box-shadow: var(--shadow);
+  opacity: 0; visibility: hidden; transform: translateY(-4px);
+  transition: opacity 0.2s, transform 0.2s var(--ease), visibility 0.2s;
+}
+/* Invisible bridge so the menu doesn't close while the pointer crosses the gap. */
+.more-list::before { content: ''; position: absolute; inset: -0.5rem 0 auto; height: 0.5rem; }
+.more:hover .more-list, .more:focus-within .more-list { opacity: 1; visibility: visible; transform: none; }
+.more-list a { border-radius: 10px; }
 .tools { display: flex; align-items: center; gap: 0.4rem; }
 .tool {
   height: 38px; min-width: 38px; padding: 0 0.6rem; border-radius: 999px;
@@ -274,7 +292,7 @@ kbd { font-family: var(--font-mono); border: 1px solid var(--line); border-radiu
 .recruiter-pill { gap: 0.4rem; }
 .recruiter-pill svg { width: 18px; height: 18px; }
 html.recruiter .recruiter-pill { background: var(--fg); color: var(--bg); border-color: var(--fg); }
-@media (max-width: 1180px) { .recruiter-pill-label { display: none; } }
+.recruiter-pill-label { display: none; }
 #recruiter-bar {
   display: none; position: fixed; left: 50%; bottom: 1.25rem; transform: translateX(-50%); z-index: 9150;
   align-items: center; gap: 0.4rem 1.1rem; flex-wrap: wrap; justify-content: center;

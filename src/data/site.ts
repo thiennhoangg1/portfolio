@@ -13,17 +13,22 @@ export const site = {
   location: 'St. Louis, MO',
   timezone: 'America/Chicago',
   roles: ['engineer', 'student', 'restaurant manager', 'poet', 'songwriter'],
+  /** One plain sentence under your name on the home page. */
+  headline: "Software engineer and CS master's student at WashU.",
 };
 
+// `more: true` pages sit in the "More" dropdown on desktop so the main nav
+// stays focused on what recruiters look for.
 export const nav = [
   { href: '/', label: 'Home', key: 'h' },
   { href: '/about', label: 'About', key: 'a' },
-  { href: '/experience', label: 'Work', key: 'w' },
+  { href: '/experience', label: 'Experience', key: 'w' },
   { href: '/projects', label: 'Projects', key: 'p' },
-  { href: '/music', label: 'Music', key: 'm' },
-  { href: '/poetry', label: 'Poetry', key: 'y' },
-  { href: '/gallery', label: 'Gallery', key: 'g' },
-  { href: '/lab', label: 'Lab', key: 'l' },
+  { href: '/resume', label: 'Resume', key: 'r' },
+  { href: '/music', label: 'Music', key: 'm', more: true },
+  { href: '/poetry', label: 'Poetry', key: 'y', more: true },
+  { href: '/gallery', label: 'Gallery', key: 'g', more: true },
+  { href: '/lab', label: 'Lab', key: 'l', more: true },
 ];
 
 export const currently = [
@@ -31,7 +36,7 @@ export const currently = [
   { label: 'Teaching', value: 'Head TA, Intro to AI' },
   { label: 'Finishing', value: 'M.S. in CS, Dec 2026' },
   { label: 'Graduated', value: 'B.S. in Computer Science, WashU, Dec 2025' },
-  { label: 'Learning', value: 'Accounting certification' },
+  { label: 'Looking for', value: 'Software engineering roles, starting 2027' },
 ];
 
 export const education = {

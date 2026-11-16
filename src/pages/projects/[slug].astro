@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import { genArt } from '../../lib/genart';
+import { parseDemo } from '../../lib/video';
 
 export async function getStaticPaths() {
   const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
@@ -17,6 +18,9 @@ const { Content } = await render(project);
 const d = project.data;
 const art = genArt(project.id, 1600, 900);
 const nextArt = genArt(next.id, 1600, 900);
+const demo = parseDemo(d.demo);
+const shots = d.gallery.map((g) => ('src' in g ? g : { src: g, caption: undefined }));
+const hasLinks = demo || d.play || d.link || d.repo;
 ---
 
 <Base title={d.title} description={d.tagline}>
@@ -25,34 +29,66 @@ const nextArt = genArt(next.id, 1600, 900);
       <a href="/projects" class="back mono link-line" data-reveal>← All projects</a>
       <h1 class="display ptitle" data-split="load">{d.title}</h1>
       <p class="lede" data-reveal style="--d:.3s">{d.tagline}</p>
+      {d.impact && <p class="impact mono" data-reveal style="--d:.35s"><span aria-hidden="true">↳</span> {d.impact}</p>}
       <dl class="meta mono" data-reveal style="--d:.4s">
         <div><dt>Year</dt><dd>{d.year}</dd></div>
         <div><dt>Role</dt><dd>{d.role}</dd></div>
         <div><dt>Type</dt><dd>{d.kind}</dd></div>
         <div><dt>Stack</dt><dd>{d.stack.join(', ')}</dd></div>
       </dl>
-      {(d.link || d.repo) && (
-        <div class="links" data-reveal style="--d:.5s">
-          {d.link && <a class="btn solid" href={d.link} target="_blank" rel="noopener" data-magnetic>Visit site ↗</a>}
+      {hasLinks && (
+        <div class="plinks" data-reveal style="--d:.5s">
+          {demo && <a class="btn solid" href="#demo" data-magnetic>Watch demo ▶</a>}
+          {d.play && <a class:list={['btn', { solid: !demo }]} href={d.play} target="_blank" rel="noopener" data-magnetic>Play in browser ▶</a>}
+          {d.link && <a class:list={['btn', { solid: !demo && !d.play }]} href={d.link} target="_blank" rel="noopener" data-magnetic>Visit site ↗</a>}
           {d.repo && <a class="btn" href={d.repo} target="_blank" rel="noopener" data-magnetic>Code ↗</a>}
         </div>
       )}
     </header>
 
     <div class="wrap">
-      <div class="hero-media" transition:name={`cover-${project.id}`}>
-        {d.cover ? <Image src={d.cover} alt="" widths={[800, 1400, 2000]} sizes="100vw" data-parallax="0.08" /> : <img src={art.url} alt="" data-parallax="0.08" />}
-      </div>
+      {d.cover ? (
+        <figure class="shot hero-shot" transition:name={`cover-${project.id}`}>
+          <Image src={d.cover} alt={d.coverAlt ?? `${d.title} screenshot`} widths={[800, 1400, 2000]} sizes="(max-width: 1400px) 100vw, 1400px" />
+        </figure>
+      ) : !demo && (
+        <div class="art-banner" transition:name={`cover-${project.id}`}><img src={art.url} alt="" /></div>
+      )}
+
+      {demo && (
+        <section id="demo" class="demo" data-reveal>
+          <p class="eyebrow">Demo</p>
+          <div class="demo-frame">
+            {demo.kind === 'file'
+              ? <video src={demo.src} controls playsinline preload="metadata"></video>
+              : <iframe src={demo.src} title={`${d.title} demo`} loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>}
+          </div>
+        </section>
+      )}
     </div>
 
     <div class="wrap body">
       <div class="prose" data-reveal><Content /></div>
       {d.credits && <p class="credits mono muted" data-reveal>{d.credits}</p>}
     </div>
+
+    {shots.length > 0 && (
+      <section class="wrap gallery">
+        <p class="eyebrow">Screenshots</p>
+        <div class="gallery-grid">
+          {shots.map((g) => (
+            <figure class="shot" data-reveal>
+              <Image src={g.src} alt={g.caption ?? `${d.title} screenshot`} widths={[600, 1000, 1600]} sizes="(max-width: 860px) 100vw, 50vw" />
+              {g.caption && <figcaption class="mono muted">{g.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
   </article>
 
   <a href={`/projects/${next.id}`} class="next" data-cursor="next">
-    <div class="next-bg"><img src={nextArt.url} alt="" /></div>
+    <div class="next-bg">{next.data.cover ? <Image src={next.data.cover} alt="" widths={[800, 1600]} sizes="100vw" /> : <img src={nextArt.url} alt="" />}</div>
     <div class="wrap next-inner">
       <span class="eyebrow">Next project</span>
       <span class="display next-title">{next.data.title} →</span>
@@ -63,12 +99,24 @@ const nextArt = genArt(next.id, 1600, 900);
 <style>
   .phead { padding-top: clamp(8rem, 16vh, 11rem); padding-bottom: 3rem; }
   .back { font-size: 0.8rem; }
-  .ptitle { font-size: clamp(3.2rem, 10vw, 9rem); margin: 1.5rem 0; }
+  .ptitle { font-size: clamp(2.6rem, 6vw, 5.5rem); margin: 1.5rem 0; }
+  .impact { margin-top: 1rem; font-size: 0.9rem; color: var(--accent); }
   .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: 0.8rem; }
   .meta dt { color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.7rem; margin-bottom: 0.3rem; }
-  .links { display: flex; gap: 0.6rem; margin-top: 2rem; }
-  .hero-media { aspect-ratio: 16 / 8; overflow: hidden; border-radius: var(--radius); background: var(--bg-2); }
-  .hero-media img { width: 100%; height: 116%; object-fit: cover; margin-top: -8%; }
+  .plinks { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2rem; }
+  /* Screenshots keep their own shape so nothing important gets cropped. */
+  .shot { margin: 0; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--line); background: var(--bg-2); }
+  .hero-shot img { width: auto; max-width: 100%; max-height: 85vh; margin-inline: auto; }
+  .shot figcaption { font-size: 0.8rem; margin-top: 0.6rem; }
+  .art-banner { aspect-ratio: 16 / 5; overflow: hidden; border-radius: var(--radius); background: var(--bg-2); }
+  .art-banner img { width: 100%; height: 100%; object-fit: cover; }
+  .demo { margin-top: 3rem; }
+  .demo-frame { margin-top: 1rem; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden; background: #000; }
+  .demo-frame iframe, .demo-frame video { width: 100%; height: 100%; border: 0; display: block; }
+  .gallery { padding-bottom: 3rem; }
+  .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 1.2rem; align-items: start; }
+  @media (max-width: 860px) { .gallery-grid { grid-template-columns: 1fr; } }
   .body { display: grid; grid-template-columns: 1fr 3fr; gap: 3rem; padding-block: 5rem; }
   .body .prose { grid-column: 2; font-size: 1.1rem; }
   .credits { grid-column: 2; font-size: 0.85rem; }

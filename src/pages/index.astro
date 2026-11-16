@@ -31,34 +31,32 @@ const beyond = [
   <section class="hero" data-trail={trailSrcs}>
     <canvas class="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
     <div class="wrap hero-inner">
-      <p class="eyebrow hero-eyebrow" data-reveal>Student · Engineer, based in St. Louis</p>
+      <p class="eyebrow hero-eyebrow" data-reveal>Based in St. Louis</p>
       <h1 class="hero-name display" data-explode data-cursor="hold" aria-label={site.name}>
-        <span class="row" aria-hidden="true">{nameChars(site.first).map((c, i) => <span class="char" style={`--i:${i}`}>{c}</span>)}</span>
-        <span class="row italic" aria-hidden="true">{nameChars(site.last).map((c, i) => <span class="char" style={`--i:${i + 6}`}>{c}</span>)}<span class="char dot">.</span></span>
+        <span class="row" aria-hidden="true">{nameChars(site.first).map((c, i) => <span class="char" style={`--i:${i}`}>{c}</span>)}<span class="char space"> </span><span class="italic">{nameChars(site.last).map((c, i) => <span class="char" style={`--i:${i + 6}`}>{c}</span>)}</span><span class="char dot">.</span></span>
       </h1>
-      <div class="hero-bottom">
-        <p class="hero-role" data-reveal style="--d:.6s">
-          Currently a <span class="role accent mono" data-rotate-words={JSON.stringify(site.roles)}>{site.roles[0]}</span>
-        </p>
-        <div class="hero-clock mono" data-reveal style="--d:.75s">
-          <span class="pulse" aria-hidden="true"></span>
-          <span>STL <span data-clock>--:--</span></span>
-          <span class="muted" data-status></span>
-        </div>
+      <p class="hero-headline" data-reveal style="--d:.4s">{site.headline}</p>
+      <div class="hero-actions" data-reveal style="--d:.55s">
+        <a href="/resume" class="btn solid" data-magnetic>Resume</a>
+        <a href="#work" class="btn" data-magnetic>Projects ↓</a>
+        <a href={`mailto:${site.email}`} class="btn" data-magnetic>Email me</a>
+        <span class="hero-socials mono">
+          <a href={site.linkedin} target="_blank" rel="noopener" class="link-line">LinkedIn ↗</a>
+          <a href={site.github} target="_blank" rel="noopener" class="link-line">GitHub ↗</a>
+        </span>
+      </div>
+      <div class="hero-clock mono" data-reveal style="--d:.7s">
+        <span class="pulse" aria-hidden="true"></span>
+        <span>STL <span data-clock>--:--</span></span>
+        <span class="muted" data-status></span>
       </div>
     </div>
-    <a href="#intro" class="scroll-hint mono" data-magnetic data-cursor="scroll">
-      <span>scroll</span><span class="line" aria-hidden="true"></span>
-    </a>
   </section>
 
   <!-- Intro -->
   <section id="intro" class="wrap intro">
-    <p class="eyebrow" data-reveal>Hello</p>
-    <p class="intro-text display" data-split>
-      Hi, I'm Thien. I build things that hold up in the real world, from the tools that keep a busy{' '}
-      <span class="whisper" data-line={whispers[0]}>restaurant</span> running to video games, apps,
-      and computer vision. Off the clock I write <span class="whisper" data-line={whispers[2]}>poems</span> and make music.
+    <p class="intro-text display" data-reveal>
+      Hi, I'm Thien. I build software, from apps and games to computer vision.
     </p>
     <div class="currently">
       {currently.map((c, i) => (
@@ -85,43 +83,20 @@ const beyond = [
     ))}
   </section>
 
-  <!-- Drive mode teaser -->
-  <section class="wrap drive-cta">
-    <div class="drive-cta-text">
-      <p class="eyebrow" data-reveal>Or take the scenic route</p>
-      <h2 class="display section-title" data-flip3d>Drive through my <em>work</em></h2>
-      <p class="drive-cta-blurb muted" data-reveal>
-        A tiny 3D world with landmarks that each hold a piece of my resume.
-      </p>
-      <div class="drive-cta-actions" data-reveal>
-        <button type="button" class="btn solid" data-drive-toggle data-magnetic>Start driving →</button>
-        <span class="mono muted">or press <kbd>D</kbd> anywhere</span>
-      </div>
-    </div>
-    <button type="button" class="drive-stage" data-drive-toggle data-cursor="drive" aria-label="Start drive mode">
-      <span class="globe" aria-hidden="true">
-        {[0, 30, 60, 90, 120, 150].map((d) => <span class="globe-m" style={`--r:${d}deg`}></span>)}
-        {[-50, -25, 0, 25, 50].map((l) => <span class="globe-p" style={`--l:${l}`}></span>)}
-        {pins.map(([lon, lat]) => <span class="globe-pin" style={`--lon:${lon}deg;--lat:${lat}deg`}></span>)}
-      </span>
-      <canvas class="drive-car" data-hero3d aria-hidden="true"></canvas>
-    </button>
-  </section>
-
   <Marquee items={[...skills.languages, ...skills.tools]} speed={45} />
 
-  <!-- Featured projects: horizontal scroll -->
-  <section class="featured" data-hscroll>
-    <div class="featured-head wrap">
+  <!-- Featured projects -->
+  <section id="work" class="wrap featured">
+    <div class="featured-head">
       <p class="eyebrow">Selected work</p>
       <h2 class="display section-title" data-flip3d>Things I've <em>built</em></h2>
     </div>
-    <div class="featured-track" data-hscroll-track>
+    <div class="featured-grid">
       {featured.map((p, i) => (
-        <div class="featured-item"><ProjectCard project={p} index={i} /></div>
+        <div class="featured-item" data-reveal style={`--d:${(i % 3) * 0.08}s`}><ProjectCard project={p} index={i} /></div>
       ))}
       <a href="/projects" class="featured-more display" data-cursor="all">
-        <span>All projects</span>
+        <span>All {projects.length} projects</span>
         <span class="arrow" aria-hidden="true">→</span>
       </a>
     </div>
@@ -146,6 +121,30 @@ const beyond = [
       ))}
     </ul>
     <a href="/experience" class="btn" data-magnetic>Full timeline →</a>
+  </section>
+
+  <!-- Everything below is the fun stuff: drive mode, the order menu, hobbies -->
+  <!-- Drive mode teaser -->
+  <section class="wrap drive-cta">
+    <div class="drive-cta-text">
+      <p class="eyebrow" data-reveal>Or take the scenic route</p>
+      <h2 class="display section-title" data-flip3d>Drive through my <em>work</em></h2>
+      <p class="drive-cta-blurb muted" data-reveal>
+        A tiny 3D world with landmarks that each hold a piece of my resume.
+      </p>
+      <div class="drive-cta-actions" data-reveal>
+        <button type="button" class="btn solid" data-drive-toggle data-magnetic>Start driving →</button>
+        <span class="mono muted">or press <kbd>D</kbd> anywhere</span>
+      </div>
+    </div>
+    <button type="button" class="drive-stage" data-drive-toggle data-cursor="drive" aria-label="Start drive mode">
+      <span class="globe" aria-hidden="true">
+        {[0, 30, 60, 90, 120, 150].map((d) => <span class="globe-m" style={`--r:${d}deg`}></span>)}
+        {[-50, -25, 0, 25, 50].map((l) => <span class="globe-p" style={`--l:${l}`}></span>)}
+        {pins.map(([lon, lat]) => <span class="globe-pin" style={`--lon:${lon}deg;--lat:${lat}deg`}></span>)}
+      </span>
+      <canvas class="drive-car" data-hero3d aria-hidden="true"></canvas>
+    </button>
   </section>
 
   <!-- Order up -->
@@ -183,20 +182,20 @@ const beyond = [
 </Base>
 
 <style>
-  .hero { position: relative; min-height: 100svh; display: flex; align-items: flex-end; overflow: hidden; }
+  .hero { position: relative; min-height: 88svh; display: flex; align-items: flex-end; overflow: hidden; }
   .hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 2s; }
   .hero-canvas:global(.ready) { opacity: 1; }
   .hero-inner { position: relative; z-index: 2; padding-bottom: clamp(5rem, 12vh, 8rem); pointer-events: none; }
   .hero-inner > * { pointer-events: auto; }
   .hero-name {
-    font-size: clamp(4.5rem, 19vw, 19rem);
-    line-height: 0.82;
-    margin: 1.2rem 0 2rem;
+    font-size: clamp(3.2rem, 9vw, 8rem);
+    line-height: 0.95;
+    margin: 1rem 0 1.4rem;
     user-select: none; touch-action: none;
     width: fit-content;
   }
   .hero-name .row { display: block; white-space: nowrap; }
-  .hero-name .row.italic { padding-left: 0.6em; }
+  .char.space { width: 0.25em; }
   .char {
     display: inline-block;
     transition: font-variation-settings 0.6s var(--ease), transform 0.6s var(--ease), color 0.4s;
@@ -210,19 +209,16 @@ const beyond = [
   .hero-name:global(.charging) .char { color: var(--accent); }
   @keyframes shake { 0% { transform: translate(1px, 0); } 50% { transform: translate(-1px, 1px); } 100% { transform: translate(0, -1px); } }
 
-  .hero-bottom { display: flex; justify-content: space-between; align-items: end; gap: 2rem; flex-wrap: wrap; }
-  .hero-role { font-size: clamp(1.1rem, 1.8vw, 1.5rem); }
-  .role { display: inline-block; min-width: 18ch; }
-  .hero-clock { display: flex; align-items: center; gap: 0.8rem; font-size: 0.8rem; flex-wrap: wrap; }
+  .hero-headline { font-size: clamp(1.15rem, 1.6vw, 1.45rem); max-width: 52ch; color: var(--fg-2); }
+  .hero-actions { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 2rem; }
+  .hero-socials { display: inline-flex; gap: 1.2rem; margin-left: 0.8rem; font-size: 0.85rem; }
+  .hero-clock { margin-top: 2.5rem; display: flex; align-items: center; gap: 0.8rem; font-size: 0.8rem; flex-wrap: wrap; }
   .pulse { width: 8px; height: 8px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 0 0 #3ddc84; animation: pulse 2s infinite; }
   @keyframes pulse { 70% { box-shadow: 0 0 0 10px transparent; } }
-  .scroll-hint { position: absolute; right: var(--pad); bottom: 2rem; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 0.6rem; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; writing-mode: vertical-rl; }
-  .scroll-hint .line { width: 1px; height: 60px; background: var(--fg); transform-origin: top; animation: scrollline 2.2s var(--ease) infinite; }
-  @keyframes scrollline { 0% { transform: scaleY(0); } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
 
-  .intro { padding-block: clamp(6rem, 14vw, 12rem) 4rem; }
-  .intro-text { font-size: clamp(2rem, 4.6vw, 4.4rem); line-height: 1.08; margin-top: 1.5rem; max-width: 22ch; letter-spacing: -0.03em; }
-  .currently { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; margin-top: 4rem; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+  .intro { padding-block: clamp(4rem, 8vw, 6rem) 2rem; }
+  .intro-text { font-size: clamp(1.6rem, 3vw, 2.6rem); line-height: 1.15; max-width: 30ch; letter-spacing: -0.02em; }
+  .currently { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1px; margin-top: 3rem; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
   .cur { display: flex; flex-direction: column; gap: 0.3rem; padding: 1.4rem; background: var(--bg); }
   .cur .mono { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; }
 
@@ -231,7 +227,7 @@ const beyond = [
   .stat-n { font-size: clamp(3.5rem, 7vw, 6rem); }
   .stat .muted { font-size: 0.9rem; max-width: 24ch; }
 
-  .section-title { font-size: clamp(3rem, 8vw, 7.5rem); margin-top: 0.8rem; }
+  .section-title { font-size: clamp(2.4rem, 5vw, 4.5rem); margin-top: 0.8rem; }
 
   .drive-cta { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 5rem); align-items: center; padding-block: 4rem 7rem; }
   .drive-cta-blurb { font-size: 1.1rem; max-width: 42ch; margin-top: 1.5rem; }
@@ -260,18 +256,15 @@ const beyond = [
   .roll-inner > span + span { transform: rotateX(-90deg) translateZ(0.55em); font-style: italic; color: var(--accent); }
   .exp-row:hover .roll-inner { transform: translateZ(-0.55em) rotateX(90deg); }
   @media (prefers-reduced-motion: reduce) { .roll-inner { transition: none; } .exp-row:hover .roll-inner { transform: translateZ(-0.55em); } }
-  .featured { padding-block: clamp(5rem, 10vw, 8rem); overflow: hidden; }
+  .featured { padding-block: clamp(4rem, 8vw, 6rem); }
   .featured-head { margin-bottom: 3rem; }
-  .featured-track { perspective: 1600px; display: flex; gap: clamp(1.5rem, 3vw, 3rem); padding-inline: var(--pad); width: max-content; align-items: stretch; }
-  .featured-item { width: clamp(320px, 38vw, 560px); transform-style: preserve-3d; will-change: transform; }
-  .featured-more { width: clamp(240px, 24vw, 360px); display: flex; flex-direction: column; justify-content: center; gap: 1rem; font-size: clamp(2.2rem, 3.6vw, 3.4rem); border: 1px solid var(--line); border-radius: var(--radius); padding: 2rem; transition: background 0.5s var(--ease), color 0.5s; }
+  .featured-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 3vw, 2.5rem) clamp(1.2rem, 2vw, 2rem); }
+  @media (max-width: 1000px) { .featured-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) { .featured-grid { grid-template-columns: 1fr; } }
+  .featured-more { min-height: 220px; display: flex; flex-direction: column; justify-content: center; gap: 1rem; font-size: clamp(2.2rem, 3.6vw, 3.4rem); border: 1px solid var(--line); border-radius: var(--radius); padding: 2rem; transition: background 0.5s var(--ease), color 0.5s; }
   .featured-more:hover { background: var(--accent); color: var(--accent-ink); }
   .featured-more .arrow { transition: transform 0.6s var(--ease); display: inline-block; }
   .featured-more:hover .arrow { transform: translateX(20px) rotate(-45deg); }
-  @media (max-width: 899px) {
-    .featured-track { width: auto; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 1rem; }
-    .featured-item, .featured-more { flex: 0 0 82vw; scroll-snap-align: center; }
-  }
 
   .exp { padding-block: 4rem; }
   .exp-list { list-style: none; padding: 0; margin: 3rem 0; border-top: 1px solid var(--line); }

@@ -7,12 +7,13 @@ stack: [Unity, C#]
 kind: game
 order: 4
 featured: true
+play: /games/animal-kingdom/index.html
 credits: Built with Andria Luo, Julia Cheon, and Sol for a video game programming course.
 ---
 
 Animals drop into a pit and roll, stack, and bump into each other. When two of the same animal touch, they merge into the next, bigger animal. Let the pile cross the line and it's game over.
 
-You can play it in the Arcade in drive mode (press D, then find the neon sign).
+You can play it right in your browser (button above), or find it in the Arcade in drive mode (press D, then look for the neon sign).
 
 ## What I built
 

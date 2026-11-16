@@ -1,6 +1,9 @@
 ---
 import { nav, site } from '../data/site';
 import { SECRETS } from '../scripts/secrets';
+
+const primary = nav.slice(1).filter((l) => !l.more);
+const more = nav.filter((l) => l.more);
 ---
 
 <header class="nav" transition:persist="nav">
@@ -10,20 +13,26 @@ import { SECRETS } from '../scripts/secrets';
   </a>
 
   <nav class="links" aria-label="Primary" data-nav>
-    {nav.slice(1).map((l) => (
+    {primary.map((l) => (
       <a href={l.href}><span data-scramble>{l.label}</span></a>
     ))}
+    <div class="more">
+      <button type="button" class="more-btn" aria-haspopup="true">More <span aria-hidden="true">▾</span></button>
+      <div class="more-list">
+        {more.map((l) => <a href={l.href}>{l.label}</a>)}
+      </div>
+    </div>
   </nav>
 
   <div class="tools">
-    <button type="button" class="tool drive-pill mono" data-drive-toggle data-cursor="drive" aria-label="Drive mode: explore the portfolio in 3D (D)">
+    <button type="button" class="tool drive-pill mono" data-drive-toggle data-cursor="drive" title="Drive mode (D)" aria-label="Drive mode: explore the portfolio in 3D (D)">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 11l1.6-4.2A2 2 0 0 1 8.5 5.5h7a2 2 0 0 1 1.9 1.3L19 11m-14 0h14m-14 0a2 2 0 0 0-2 2v3h2m14-5a2 2 0 0 1 2 2v3h-2M5 16v1.5M19 16v1.5M7.5 13.5h.01M16.5 13.5h.01" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>
       <span class="drive-pill-label">drive</span>
     </button>
     <button type="button" class="tool secrets-pill mono" data-term-open data-cursor="⌘K" aria-label="Open terminal and secrets">
       <span aria-hidden="true">✦</span> <span data-secret-count>0/{SECRETS.length}</span>
     </button>
-    <button type="button" class="tool recruiter-pill mono" data-recruiter-toggle data-cursor="calm" aria-label="Recruiter mode: no animations, one-page resume">
+    <button type="button" class="tool recruiter-pill mono" data-recruiter-toggle data-cursor="calm" title="Recruiter mode: no animations" aria-label="Recruiter mode: no animations, one-page resume">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h16v11H4zM9 8V5.5h6V8M4 13h16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path></svg>
       <span class="recruiter-pill-label">recruiter</span>
     </button>

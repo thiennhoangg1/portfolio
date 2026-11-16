@@ -6,7 +6,7 @@
 .drive-pill:hover svg { transform: translateX(3px) rotate(-6deg); }
 .drive-pill:hover { border-color: var(--accent); color: var(--accent); }
 .menu-drive { margin-top: 1.5rem; }
-@media (max-width: 960px) { .drive-pill-label { display: none; } }
+.drive-pill-label { display: none; }
 @media (min-width: 961px) { .menu-drive { display: none; } }
 
 /* ---------- Overlay ---------- */

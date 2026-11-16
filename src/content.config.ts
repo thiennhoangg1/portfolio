@@ -14,7 +14,19 @@ const projects = defineCollection({
       kind: z.enum(['work', 'side', 'game']),
       order: z.number().default(99),
       featured: z.boolean().default(false),
+      /** One-line result shown on cards, e.g. "Runs the front of house every night". */
+      impact: z.string().optional(),
+      /** Screenshot shown on the card and at the top of the project page. */
       cover: image().optional(),
+      coverAlt: z.string().optional(),
+      /** Demo video: a YouTube, Loom, or Vimeo link, or a file in /public like "/videos/pos.mp4". */
+      demo: z.string().optional(),
+      /** Extra screenshots shown below the write-up. Add a caption with { src, caption }. */
+      gallery: z
+        .array(z.union([image(), z.object({ src: image(), caption: z.string().optional() })]))
+        .default([]),
+      /** Playable build, e.g. "/games/animal-kingdom/". */
+      play: z.string().optional(),
       link: z.string().url().optional(),
       repo: z.string().url().optional(),
       credits: z.string().optional(),
