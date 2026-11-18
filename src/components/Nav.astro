@@ -1,6 +1,7 @@
 ---
 import { nav, site } from '../data/site';
 import { SECRETS } from '../scripts/secrets';
+import Monogram from './Monogram.astro';
 
 const primary = nav.slice(1).filter((l) => !l.more);
 const more = nav.filter((l) => l.more);
@@ -8,13 +9,13 @@ const more = nav.filter((l) => l.more);
 
 <header class="nav" transition:persist="nav">
   <a href="/" class="logo" aria-label={`${site.name}, home`} data-magnetic="0.4" data-cursor="home">
-    <span class="logo-mark" aria-hidden="true">✦</span>
-    <span class="logo-text" data-scramble>Thien Hoang</span>
+    <Monogram size={34} class="logo-mark" />
+    <span class="logo-text">Thien Hoang</span>
   </a>
 
   <nav class="links" aria-label="Primary" data-nav>
     {primary.map((l) => (
-      <a href={l.href}><span data-scramble>{l.label}</span></a>
+      <a href={l.href}><span>{l.label}</span></a>
     ))}
     <div class="more">
       <button type="button" class="more-btn" aria-haspopup="true">More <span aria-hidden="true">▾</span></button>

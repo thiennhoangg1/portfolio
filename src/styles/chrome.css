@@ -32,7 +32,7 @@
 #cursor-label {
   font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: lowercase;
   display: grid; place-items: center;
-  width: 84px; height: 84px; margin: -42px 0 0 -42px; border-radius: 50%;
+  width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%; font-size: 0.66rem;
   background: var(--accent); color: var(--accent-ink);
   scale: 0; transition: scale 0.45s var(--ease);
 }
@@ -49,37 +49,36 @@ html:not(.has-cursor) #cursor-dot, html:not(.has-cursor) #cursor-ring, html:not(
 }
 .nav::before {
   content: ''; position: absolute; inset: 0; z-index: -1;
-  background: linear-gradient(var(--bg) 20%, transparent);
-  opacity: 0.85; pointer-events: none;
+  background: linear-gradient(var(--bg) 30%, transparent);
+  opacity: 0.9; pointer-events: none;
 }
-.logo { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.04em; }
-.logo-mark { color: var(--accent); display: inline-block; transition: transform 0.8s var(--ease); font-size: 1.1rem; }
-.logo:hover .logo-mark { transform: rotate(180deg) scale(1.2); }
+.logo { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; letter-spacing: -0.01em; line-height: 1; }
+.logo-mark { display: block; flex: none; transition: transform 0.5s var(--ease); }
+.logo:hover .logo-mark { transform: rotate(-6deg); }
 .links {
   display: flex; gap: 0.2rem;
   padding: 0.3rem; border-radius: 999px;
-  background: color-mix(in oklab, var(--bg) 70%, transparent);
-  border: 1px solid var(--line);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  background: var(--bg);
+  border: 1.5px solid var(--fg);
 }
 .links a {
-  font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.03em;
+  font-family: var(--font-display); font-weight: 500; font-size: 0.9rem;
   padding: 0.45em 0.9em; border-radius: 999px;
   transition: background 0.3s, color 0.3s;
 }
-.links a:hover { background: var(--line); }
+.links a:hover { background: var(--bg-2); }
 .links a.active { background: var(--fg); color: var(--bg); }
 .more { position: relative; }
 .more-btn {
-  font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.03em;
+  font-family: var(--font-display); font-weight: 500; font-size: 0.9rem;
   padding: 0.45em 0.9em; border-radius: 999px; transition: background 0.3s;
 }
 .more-btn span { font-size: 0.65em; }
-.more:hover .more-btn, .more:focus-within .more-btn { background: var(--line); }
+.more:hover .more-btn, .more:focus-within .more-btn { background: var(--bg-2); }
 .more-list {
   position: absolute; top: 100%; right: 0; min-width: 9rem; margin-top: 0.4rem;
   display: grid; padding: 0.3rem; border-radius: 14px;
-  background: var(--bg); border: 1px solid var(--line); box-shadow: var(--shadow);
+  background: var(--bg); border: 1.5px solid var(--fg); box-shadow: var(--shadow);
   opacity: 0; visibility: hidden; transform: translateY(-4px);
   transition: opacity 0.2s, transform 0.2s var(--ease), visibility 0.2s;
 }
@@ -91,13 +90,12 @@ html:not(.has-cursor) #cursor-dot, html:not(.has-cursor) #cursor-ring, html:not(
 .tool {
   height: 38px; min-width: 38px; padding: 0 0.6rem; border-radius: 999px;
   display: inline-grid; place-items: center; grid-auto-flow: column; gap: 0.35rem;
-  border: 1px solid var(--line);
-  background: color-mix(in oklab, var(--bg) 70%, transparent);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid var(--fg);
+  background: var(--bg);
   font-size: 0.75rem;
   transition: border-color 0.3s, transform 0.3s var(--ease);
 }
-.tool:hover { border-color: var(--fg); }
+.tool:hover { background: var(--bg-2); }
 .tool svg { width: 18px; height: 18px; }
 .secrets-pill span:first-child { color: var(--accent); }
 .i-sound .mute { display: none; }
@@ -260,7 +258,7 @@ html.flashlight #flashlight { opacity: 1; }
 .marquee:hover .marquee-track { animation-play-state: paused; }
 .marquee-item { display: inline-flex; align-items: center; gap: 1.5rem; padding-right: 1.5rem; white-space: nowrap; }
 .marquee-item .mono { font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; }
-.marquee.big .marquee-item .display { font-size: clamp(2.5rem, 7vw, 6rem); }
+.marquee.big .marquee-item .display { font-size: clamp(1.8rem, 4vw, 3.2rem); }
 .marquee.big .marquee-item:nth-child(even) .display { font-style: italic; color: transparent; -webkit-text-stroke: 1px var(--fg); }
 .marquee-sep { color: var(--accent); font-size: 0.9em; }
 @keyframes marquee { to { transform: translateX(-100%); } }
@@ -268,7 +266,7 @@ html.flashlight #flashlight { opacity: 1; }
 /* ---------- Footer ---------- */
 .footer { position: relative; z-index: 1; margin-top: clamp(6rem, 14vw, 12rem); border-top: 1px solid var(--line); }
 .footer-grid { display: grid; grid-template-columns: 1.6fr 1fr; gap: 3rem; padding-block: clamp(3rem, 8vw, 6rem); }
-.footer-email { display: inline-block; font-size: clamp(1.8rem, 5vw, 4.4rem); margin: 1rem 0 1.5rem; word-break: break-all; }
+.footer-email { display: inline-block; font-size: clamp(1.6rem, 3.5vw, 3rem); margin: 1rem 0 1.5rem; word-break: break-all; }
 .footer-email span { display: inline-block; background: linear-gradient(var(--accent), var(--accent)) no-repeat left 92% / 0 0.08em; transition: background-size 0.6s var(--ease); }
 .footer-email:hover span { background-size: 100% 0.08em; }
 .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; font-size: 0.85rem; }

@@ -1,7 +1,6 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Marquee from '../components/Marquee.astro';
 import { getImage } from 'astro:assets';
 import { education, hobbies, ranks, site, skills, whispers } from '../data/site';
 import chessShot from '../assets/hobbies/chess.png';
@@ -18,32 +17,27 @@ const proofs = Object.fromEntries(
 );
 ---
 
-<Base title="About" description={`About ${site.name}: student, engineer, restaurant manager, poet, songwriter.`}>
-  <section class="wrap">
-    <h1 class="page-title display" data-split="load">Hi, I'm <em>Thien.</em></h1>
-  </section>
-
-  <section class="wrap about-grid">
+<Base title="About" description={`About ${site.name}: CS student at WashU, software engineer, restaurant manager, poet and songwriter.`}>
+  <section class="wrap about-top">
     <div class="about-text">
-      <p class="lede" data-reveal>
-        I'm a computer science student at WashU (B.S. Dec 2025, M.S. Dec 2026) who likes building things that
-        survive contact with real people.
-      </p>
-      <div class="prose" data-reveal style="--d:.1s">
-        <p>
-          I co-founded a healthcare AI startup, built full-stack products used by thousands of students, and wrote
-          computer vision that turned a three-hour inventory job into minutes. I also make video games.
+      <h1 class="page-title display" data-split="load">About <em>me</em></h1>
+      <div class="prose" data-reveal>
+        <p class="about-lede">
+          I'm a computer science student at WashU: B.S. in December 2025, M.S. finishing December 2026.
         </p>
         <p>
-          I'm also a restaurant manager. That job taught me more about systems, people, and pressure than most classes,
-          so I built the software the restaurant runs on: a touchscreen POS, a time clock, and tip and payroll tools.
+          I'm head TA for Intro to AI, I do graduate research, and I've shipped full-stack products, an iOS health app,
+          and computer vision tools.
         </p>
         <p>
-          Outside of that, I write <span class="whisper" data-line={whispers[5]}>poetry</span>, make music late at night,
-          and spend a lot of time as head TA explaining search algorithms until they click.
+          I also help run Cafe Mochi, a local restaurant, and built the POS, time clock and payroll tools it uses every
+          day. A busy dinner rush is a great test for software.
+        </p>
+        <p>
+          Off the clock I climb, lift, play chess, write <span class="whisper" data-line={whispers[5]}>poetry</span>, and make music.
         </p>
       </div>
-      <div class="about-ctas" data-reveal style="--d:.2s">
+      <div class="about-ctas" data-reveal style="--d:.1s">
         <a href="/resume.pdf" class="btn solid" target="_blank" rel="noopener" data-magnetic>Resume ↓</a>
         <a href={`mailto:${site.email}`} class="btn" data-magnetic>Say hello</a>
       </div>
@@ -51,110 +45,90 @@ const proofs = Object.fromEntries(
 
     <div class="collage" aria-hidden="true">
       {collage.map((p, i) => (
-        <figure class={`c c${i}`} data-parallax={[0.1, 0.25, 0.15, 0.3, 0.2][i]}>
-          <div data-unmask style={`--d:${i * 0.12}s`}>
-            <Image src={p.src} alt="" widths={[300, 600]} sizes="(max-width: 900px) 45vw, 22vw" />
+        <figure class={`c c${i}`}>
+          <div data-unmask style={`--d:${i * 0.1}s`}>
+            <Image src={p.src} alt="" widths={[300, 600]} sizes="(max-width: 900px) 45vw, 20vw" />
           </div>
         </figure>
       ))}
     </div>
   </section>
 
-  <Marquee items={['curious', 'calm under pressure', 'builder', 'teacher', 'night owl', 'writer']} speed={35} big reverse />
-
-  <section class="wrap facts">
-    <div class="fact-block" data-reveal>
+  <section class="wrap cards">
+    <div class="card" data-reveal>
       <p class="eyebrow">Education</p>
       <h2 class="display">{education.school}</h2>
       <ul class="plain">{education.degrees.map((d) => <li>{d}</li>)}</ul>
+      <p class="c-label mono muted">Honors</p>
+      <p class="c-text">{education.honors.join(' · ')}</p>
+      <p class="c-label mono muted">Coursework</p>
+      <p class="c-text">{education.coursework.join(' · ')}</p>
     </div>
-    <div class="fact-block" data-reveal style="--d:.1s">
-      <p class="eyebrow">Honors</p>
-      <ul class="pills">{education.honors.map((h) => <li class="tag">{h}</li>)}</ul>
-      <p class="eyebrow" style="margin-top:2rem">Coursework</p>
-      <ul class="pills">{education.coursework.map((c) => <li class="tag">{c}</li>)}</ul>
-    </div>
-    <div class="fact-block" data-reveal style="--d:.2s">
-      <p class="eyebrow">Toolbox</p>
-      <div class="toolbox">
-        {[...skills.languages, ...skills.tools].map((s, i) => (
-          <span class="tool-chip" style={`--r:${(i * 37) % 11 - 5}deg`} data-hover>{s}</span>
-        ))}
-      </div>
-    </div>
-  </section>
 
-  <section class="wrap offclock">
-    <p class="eyebrow" data-reveal>Off the clock</p>
-    <h2 class="display offclock-title" data-flip3d>Ranks &amp; <em>hobbies</em></h2>
-    <div class="ranks">
-      {ranks.map((r, i) => {
-        const proof = r.proof ? proofs[r.proof] : null;
-        return (
-          <div class="rank" data-reveal style={`--d:${i * 0.06}s`} data-tilt="6">
-            <span class="mono muted rank-game">{r.game}</span>
-            <span class="display rank-value">{r.rank}</span>
-            {r.detail && <span class="mono muted rank-detail">{r.detail}</span>}
-            {proof && (
-              <a class="rank-proof" href={proof.full} target="_blank" rel="noopener" data-cursor="proof">
-                <img src={proof.thumb} alt={`Screenshot of my ${r.game} profile`} loading="lazy" decoding="async" />
-                <span class="mono">see proof ↗</span>
-              </a>
-            )}
-          </div>
-        );
-      })}
+    <div class="card" data-reveal style="--d:.08s">
+      <p class="eyebrow">Skills</p>
+      <p class="c-label mono muted">Languages</p>
+      <p class="c-text">{skills.languages.join(' · ')}</p>
+      <p class="c-label mono muted">Tools</p>
+      <p class="c-text">{skills.tools.join(' · ')}</p>
     </div>
-    <ul class="hobbies" data-reveal>
-      {hobbies.map((h) => <li class="tag">{h}</li>)}
-    </ul>
+
+    <div class="card" data-reveal style="--d:.16s">
+      <p class="eyebrow">Off the clock</p>
+      <ul class="ranks">
+        {ranks.map((r) => {
+          const proof = r.proof ? proofs[r.proof] : null;
+          return (
+            <li>
+              <span>{r.game}</span>
+              <span class="rank-value">
+                {r.rank}
+                {proof && <a href={proof.full} target="_blank" rel="noopener" class="mono proof" title={r.detail}>proof ↗</a>}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+      <ul class="hobbies">{hobbies.map((h) => <li class="tag">{h}</li>)}</ul>
+    </div>
   </section>
 </Base>
 
 <style>
-  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 6rem); padding-block: 2rem 6rem; align-items: start; }
-  .about-text .lede { margin-bottom: 2rem; color: var(--fg); }
-  .about-ctas { display: flex; gap: 0.8rem; margin-top: 2.5rem; flex-wrap: wrap; }
-  .collage { position: relative; height: clamp(520px, 60vw, 780px); }
+  .about-top { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: clamp(2rem, 5vw, 5rem); align-items: start; padding-bottom: 3rem; }
+  .about-text .page-title { padding-bottom: 1.5rem; }
+  .about-lede { font-size: clamp(1.15rem, 1.6vw, 1.35rem); color: var(--fg); font-weight: 500; }
+  .about-text .prose p { margin: 0 0 0.9rem; color: var(--fg-2); }
+  .about-text .prose .about-lede { color: var(--fg); }
+  .about-ctas { display: flex; gap: 0.8rem; margin-top: 1.8rem; flex-wrap: wrap; }
+  .collage { position: relative; height: clamp(380px, 38vw, 520px); margin-top: clamp(7rem, 15vh, 9rem); }
   .c { position: absolute; margin: 0; }
-  .c > div { overflow: hidden; border-radius: 14px; box-shadow: var(--shadow); }
-  .c img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 3 / 4; transition: transform 1s var(--ease); }
-  .c:hover img { transform: scale(1.08); }
-  .c0 { width: 46%; top: 0; left: 4%; z-index: 2; }
-  .c1 { width: 38%; top: 8%; right: 0; }
-  .c2 { width: 34%; top: 44%; left: 0; z-index: 3; }
-  .c3 { width: 42%; top: 50%; right: 8%; z-index: 1; }
-  .c4 { width: 26%; top: 34%; left: 38%; z-index: 4; }
+  .c > div { overflow: hidden; border-radius: 14px; border: 1.5px solid var(--fg); box-shadow: var(--shadow); }
+  .c img { width: 100%; height: 100%; object-fit: cover; aspect-ratio: 3 / 4; display: block; }
+  .c0 { width: 44%; top: 0; left: 4%; z-index: 2; }
+  .c1 { width: 36%; top: 6%; right: 2%; }
+  .c2 { width: 32%; top: 50%; left: 0; z-index: 3; }
+  .c3 { width: 38%; top: 52%; right: 8%; z-index: 1; }
+  .c4 { width: 24%; top: 36%; left: 38%; z-index: 4; }
   .c4 img { aspect-ratio: 1; }
 
-  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3rem; padding-block: 6rem 2rem; }
-  .fact-block h2 { font-size: 2.2rem; margin: 0.8rem 0 1rem; line-height: 1.05; }
-  .plain { list-style: none; padding: 0; color: var(--fg-2); }
-  .plain li + li { margin-top: 0.3rem; }
-  .pills { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
-  .toolbox { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
-  .tool-chip {
-    font-family: var(--font-mono); font-size: 0.8rem; padding: 0.5em 0.9em; border-radius: 10px;
-    background: var(--card); border: 1px solid var(--line);
-    transition: transform 0.5s var(--ease), background 0.3s, color 0.3s;
-  }
-  .tool-chip:hover { transform: rotate(var(--r)) scale(1.15); background: var(--accent); color: var(--accent-ink); }
-
-  .offclock { padding-block: 6rem 2rem; }
-  .offclock-title { font-size: clamp(2.8rem, 7vw, 6rem); margin: 0.8rem 0 3rem; }
-  .ranks { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1rem; }
-  .rank { display: flex; flex-direction: column; gap: 0.35rem; padding: 1.3rem; border-radius: var(--radius); border: 1px solid var(--line); background: var(--card); }
-  .rank-game { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; }
-  .rank-value { font-size: clamp(1.8rem, 2.6vw, 2.6rem); line-height: 1; color: var(--accent); }
-  .rank-detail { font-size: 0.72rem; }
-  .rank-proof { margin-top: auto; padding-top: 0.9rem; display: grid; gap: 0.4rem; }
-  .rank-proof img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; object-position: left bottom; border-radius: 8px; border: 1px solid var(--line); filter: grayscale(0.5); transition: filter 0.4s; }
-  .rank-proof:hover img { filter: none; }
-  .rank-proof .mono { font-size: 0.7rem; color: var(--fg-2); }
-  .hobbies { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
-  @media (max-width: 1100px) { .ranks { grid-template-columns: repeat(3, 1fr); } }
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; padding-block: 2rem 4rem; }
+  .card { padding: 1.5rem 1.6rem 1.7rem; border: 1.5px solid var(--fg); border-radius: var(--radius); background: var(--card); box-shadow: var(--shadow); }
+  .card h2 { font-size: 1.35rem; line-height: 1.2; margin: 0.7rem 0 0.5rem; }
+  .plain { list-style: none; padding: 0; margin: 0; color: var(--fg-2); font-size: 0.95rem; }
+  .plain li + li { margin-top: 0.2rem; }
+  .c-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; margin: 1.1rem 0 0.3rem; }
+  .card .eyebrow + .c-label { margin-top: 0.8rem; }
+  .c-text { margin: 0; font-size: 0.92rem; line-height: 1.6; color: var(--fg-2); }
+  .ranks { list-style: none; padding: 0; margin: 0.8rem 0 0; }
+  .ranks li { display: flex; justify-content: space-between; gap: 1rem; padding: 0.45rem 0; border-bottom: 1px dashed color-mix(in oklab, var(--fg) 25%, transparent); font-size: 0.95rem; }
+  .rank-value { font-weight: 600; color: var(--accent); display: inline-flex; gap: 0.6rem; align-items: baseline; }
+  .proof { font-size: 0.68rem; font-weight: 400; color: var(--fg-2); text-decoration: underline; text-underline-offset: 3px; }
+  .proof:hover { color: var(--accent); }
+  .hobbies { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1.2rem; }
+  @media (max-width: 1000px) { .cards { grid-template-columns: 1fr; } }
   @media (max-width: 900px) {
-    .about-grid, .facts { grid-template-columns: 1fr; }
-    .collage { height: 120vw; }
+    .about-top { grid-template-columns: 1fr; }
+    .collage { height: 100vw; margin-top: 0; }
   }
 </style>

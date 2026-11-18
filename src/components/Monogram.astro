@@ -1,0 +1,12 @@
+---
+// TH monogram: the T's crossbar runs straight into the H, like one pen stroke.
+// To remove it, delete this component's usages (Nav.astro, index.astro).
+interface Props { size?: number; class?: string }
+const { size = 34, class: cls } = Astro.props;
+---
+
+<svg class:list={['monogram', cls]} width={size} height={size} viewBox="0 0 40 40" aria-hidden="true">
+  <rect x="1" y="1" width="38" height="38" rx="11" fill="var(--fg)" />
+  <path d="M8.5 12.5 H22 V28.5 M15.2 12.5 V28.5 M22 20.5 H30 M30 12.5 V28.5" fill="none" stroke="var(--bg)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="30.5" cy="33" r="2.1" fill="var(--accent)" />
+</svg>

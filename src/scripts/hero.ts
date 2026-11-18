@@ -248,8 +248,8 @@ onPage(() => {
   const loop = () => {
     x = lerp(x, pointer.x, 0.12);
     y = lerp(y, pointer.y, 0.12);
-    rot = lerp(rot, Math.max(-14, Math.min(14, (pointer.x - x) * 0.15)), 0.1);
-    box.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%) rotate(${rot}deg) scale(${on ? 1 : 0.6})`;
+    rot = lerp(rot, Math.max(-5, Math.min(5, (pointer.x - x) * 0.06)), 0.1);
+    box.style.transform = `translate3d(${x}px, ${y}px, 0) translate(28px, -50%) rotate(${rot}deg) scale(${on ? 1 : 0.8})`;
     raf = requestAnimationFrame(loop);
   };
   raf = requestAnimationFrame(loop);
@@ -258,7 +258,7 @@ onPage(() => {
     if (!row) return;
     if (img.getAttribute('src') !== row.dataset.preview) {
       img.src = row.dataset.preview!;
-      gsap.fromTo(img, { scale: 1.3, filter: 'blur(8px)' }, { scale: 1, filter: 'blur(0px)', duration: 0.6, ease: 'expo.out' });
+      gsap.fromTo(img, { opacity: 0.4 }, { opacity: 1, duration: 0.35, ease: 'power2.out' });
     }
     on = true;
     box.classList.add('on');

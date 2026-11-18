@@ -99,7 +99,7 @@ export const landmarks: Landmark[] = [
     id: 'eiffel', name: 'Eiffel Tower', place: 'Paris, France', region: 'world',
     x: 55, z: 48, pad: { x: 55, z: 24 },
     title: 'Café life',
-    blurb: 'I manage a restaurant, and built the software that runs it.',
+    blurb: 'Software I built that a working restaurant runs on.',
     sections: ['order'],
     projects: ['restaurant-pos', 'tapcount', 'hours-calculator'],
     experience: ['01-cafe-mochi'],

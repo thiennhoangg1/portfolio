@@ -99,20 +99,21 @@ const hasLinks = demo || d.play || d.link || d.repo;
 <style>
   .phead { padding-top: clamp(8rem, 16vh, 11rem); padding-bottom: 3rem; }
   .back { font-size: 0.8rem; }
-  .ptitle { font-size: clamp(2.6rem, 6vw, 5.5rem); margin: 1.5rem 0; }
+  .ptitle { font-size: clamp(2.2rem, 4.5vw, 3.75rem); margin: 1.5rem 0; }
   .impact { margin-top: 1rem; font-size: 0.9rem; color: var(--accent); }
+  .ptitle { letter-spacing: -0.02em; }
   .meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1.5rem; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--line); font-size: 0.8rem; }
   .meta dt { color: var(--fg-3); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.7rem; margin-bottom: 0.3rem; }
   .plinks { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2rem; }
   /* Screenshots keep their own shape so nothing important gets cropped. */
   .shot { margin: 0; }
-  .shot img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--line); background: var(--bg-2); }
+  .shot img { display: block; width: 100%; height: auto; border-radius: var(--radius); border: 1.5px solid var(--fg); box-shadow: var(--shadow); background: var(--bg-2); }
   .hero-shot img { width: auto; max-width: 100%; max-height: 85vh; margin-inline: auto; }
   .shot figcaption { font-size: 0.8rem; margin-top: 0.6rem; }
-  .art-banner { aspect-ratio: 16 / 5; overflow: hidden; border-radius: var(--radius); background: var(--bg-2); }
+  .art-banner { aspect-ratio: 16 / 5; overflow: hidden; border-radius: var(--radius); background: var(--bg-2); border: 1.5px solid var(--fg); box-shadow: var(--shadow); }
   .art-banner img { width: 100%; height: 100%; object-fit: cover; }
   .demo { margin-top: 3rem; }
-  .demo-frame { margin-top: 1rem; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden; background: #000; }
+  .demo-frame { margin-top: 1rem; aspect-ratio: 16 / 9; border-radius: var(--radius); overflow: hidden; background: #000; border: 1.5px solid var(--fg); box-shadow: var(--shadow); }
   .demo-frame iframe, .demo-frame video { width: 100%; height: 100%; border: 0; display: block; }
   .gallery { padding-bottom: 3rem; }
   .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 1.2rem; align-items: start; }
@@ -129,6 +130,6 @@ const hasLinks = demo || d.play || d.link || d.repo;
   .next:hover .next-bg img { transform: scale(1); }
   .next:hover .next-bg::after { background: rgb(0 0 0 / 0.25); }
   .next .eyebrow { color: rgb(255 255 255 / 0.75); }
-  .next-title { display: block; font-size: clamp(2.6rem, 8vw, 7rem); margin-top: 1rem; transition: transform 0.7s var(--ease); }
+  .next-title { display: block; font-size: clamp(2rem, 4.5vw, 3.5rem); margin-top: 1rem; transition: transform 0.7s var(--ease); }
   .next:hover .next-title { transform: translateX(1.5rem); font-style: italic; }
 </style>

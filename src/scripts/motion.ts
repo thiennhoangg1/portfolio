@@ -48,8 +48,10 @@ export function splitWords(el: HTMLElement) {
   return $$('.split-word', el);
 }
 
+// Headings now simply appear (the word-by-word slide felt busy), so this is off.
+const SPLIT_TEXT = false;
 onPage(() => {
-  if (reducedMotion()) return;
+  if (reducedMotion() || !SPLIT_TEXT) return;
   const tweens: gsap.core.Tween[] = [];
   for (const el of $$('[data-split]')) {
     const words = splitWords(el);
@@ -285,8 +287,9 @@ function splitChars(el: HTMLElement) {
   return $$('.flip-char', el);
 }
 
+const FLIP_TITLES = false;
 onPage(() => {
-  if (reducedMotion()) return;
+  if (reducedMotion() || !FLIP_TITLES) return;
   const tweens: gsap.core.Tween[] = [];
   for (const el of $$('[data-flip3d]')) {
     const chars = splitChars(el);
